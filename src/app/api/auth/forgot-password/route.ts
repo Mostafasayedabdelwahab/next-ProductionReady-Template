@@ -11,7 +11,8 @@ export async function POST(req: Request) {
         return NextResponse.json({
             message: "If the email exists, a reset link was sent",
         });
-    } catch {
+    } catch (error) {
+        console.error("FORGOT PASSWORD ERROR:", error);
         return NextResponse.json(
             { message: "Something went wrong form route" },
             { status: 500 }

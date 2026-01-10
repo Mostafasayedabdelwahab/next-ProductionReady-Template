@@ -61,28 +61,31 @@ export async function loginUser(input: unknown) {
 
 
 export async function forgotPassword(email: string) {
-  const user = await findUserByEmail(email);
+    const user = await findUserByEmail(email);
 
-  // 🛡️ Security: نرجع بدون error
-  if (!user) return;
+    // 🛡️ Security: نرجع بدون error
+    if (!user) return;
 
-  // 1️⃣ Generate raw token
-  const rawToken = crypto.randomBytes(32).toString("hex");
+    // 2️⃣ (اختياري لكن مهم) امسح أي توكن قديم
+    // await deletePasswordResetToken(user.id);
 
-  // 2️⃣ Hash token قبل التخزين
-  const hashedToken = await bcrypt.hash(rawToken, 10);
+    // 3️⃣ Generate raw token
+    const rawToken = crypto.randomBytes(32).toString("hex");
 
-  // 3️⃣ Save token
-  await createPasswordResetToken({
-    userId: user.id,
-    token: hashedToken,
-    expiresAt: new Date(Date.now() + 1000 * 60 * 15), // 15 min
-  });
+    // 4️⃣ Hash token قبل التخزين
+    const hashedToken = await bcrypt.hash(rawToken, 10);
 
-    // 4️⃣ Create reset link
+    // 5️⃣ Save token
+    await createPasswordResetToken({
+        userId: user.id,
+        token: hashedToken,
+        expiresAt: new Date(Date.now() + 1000 * 60 * 15), // 15 min
+    });
+
+    // 6️⃣  Create reset link
     const resetLink = `${process.env.APP_URL}/reset-password?token=${rawToken}`;
 
-    // 5️⃣ Send email
+    // 7️⃣  Send email
     await sendResetPasswordEmail(user.email, resetLink);
 }
 
