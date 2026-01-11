@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
-import { createUser, findUserByEmail, createPasswordResetToken, deletePasswordResetToken, updateUserPassword, getValidResetTokens } from "./user.repository";
+import { createUser, findUserByEmail, createPasswordResetToken, deletePasswordResetToken, updateUserPassword, getValidResetTokens, getUserById } from "./user.repository";
 import { registerApiSchema, loginSchema, resetPasswordApiSchema } from "./user.schema";
 import { sendResetPasswordEmail } from "@/lib/mail";
 
@@ -61,7 +61,8 @@ export async function loginUser(input: unknown) {
 
 
 export async function forgotPassword(email: string) {
-    const user = await findUserByEmail(email);
+    const normalizedEmail = email.toLowerCase().trim();
+    const user = await findUserByEmail(normalizedEmail);
 
     // 🛡️ Security: نرجع بدون error
     if (!user) return;
@@ -79,7 +80,7 @@ export async function forgotPassword(email: string) {
     await createPasswordResetToken({
         userId: user.id,
         token: hashedToken,
-        expiresAt: new Date(Date.now() + 1000 * 60 * 15), // 15 min
+        expiresAt: new Date(Date.now() + 1000 * 60 * 10), // 10 min
     });
 
     // 6️⃣  Create reset link
@@ -95,18 +96,34 @@ export async function resetPassword(input: unknown) {
 
     const resetTokens = await getValidResetTokens();
 
-    const matchedToken = await Promise.any(
-        resetTokens.map(async (t) => {
-            const isValid = await bcrypt.compare(
-                token,
-                t.token
-            );
-            return isValid ? t : Promise.reject();
-        })
-    ).catch(() => null);
+    let matchedToken = null;
+
+    for (const t of resetTokens) {
+        const isValid = await bcrypt.compare(token, t.token);
+        if (isValid) {
+            matchedToken = t;
+            break;
+        }
+    }
 
     if (!matchedToken) {
         throw new Error("Invalid or expired token");
+    }
+
+    const user = await getUserById(matchedToken.userId);
+
+    if (!user || !user.password) {
+        throw new Error("User not found");
+    }
+
+    // ⛔ امنع نفس الباسورد القديم
+    const isSamePassword = await bcrypt.compare(
+        password,
+        user.password
+    );
+
+    if (isSamePassword) {
+        throw new Error("New password must be different from old password");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);

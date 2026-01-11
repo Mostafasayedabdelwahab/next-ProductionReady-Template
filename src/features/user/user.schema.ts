@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const registerFormSchema = z
     .object({
-        name: z.string().min(2, "Name is required"),
+        name: z.string().min(3, "Name must be at least 3 characters"),
         email: z.string().email("Invalid email"),
         password: z.string().min(6, "Password must be at least 6 chars"),
         confirmPassword: z.string(),
@@ -12,11 +12,10 @@ export const registerFormSchema = z
         message: "Passwords do not match",
     });
 
-export type RegisterFormInput = z.infer<typeof registerFormSchema>;
 
 
 export const registerApiSchema = z.object({
-    name: z.string().min(2),
+    name: z.string().min(3),
     email: z.string().email(),
     password: z.string().min(6),
 });
@@ -38,7 +37,7 @@ export const forgotPasswordSchema = z.object({
 export const resetPasswordFromSchema = z
     .object({
         token: z.string().min(1, "Token is required"),
-        password: z.string().min(8, "Password must be at least 8 characters"),
+        password: z.string().min(6, "Password must be at least 6 characters"),
         confirmPassword: z.string(),
     })
     .refine((data) => data.password === data.confirmPassword, {
@@ -47,10 +46,9 @@ export const resetPasswordFromSchema = z
     });
 
 
-export type resetPasswordFormInput = z.infer<typeof resetPasswordFromSchema>;
 
 
 export const resetPasswordApiSchema = z.object({
     token: z.string().min(1),
-    password: z.string().min(8),
+    password: z.string().min(6, "Password must be at least 6 characters"),
 });

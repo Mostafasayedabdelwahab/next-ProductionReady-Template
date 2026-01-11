@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import { ZodError } from "zod";
 
 import { authOptions } from "@/lib/auth";
 import { getOrCreateProfile, updateUserProfile, } from "@/features/profile/profile.service";
@@ -43,12 +44,38 @@ export async function PATCH(req: Request) {
         );
     }
 
-    const body = await req.json();
+    try {
+        const body = await req.json();
 
-    const updatedProfile = await updateUserProfile(
-        session.user.id,
-        body
-    );
+        const updatedProfile = await updateUserProfile(
+            session.user.id,
+            body
+        );
 
-    return NextResponse.json(updatedProfile);
+        return NextResponse.json(updatedProfile);
+    } catch (error: unknown) {
+        // ✅ Zod validation error
+        if (error instanceof ZodError) {
+            return NextResponse.json(
+                {
+                    message: error.issues[0].message,
+                },
+                { status: 400 }
+            );
+        }
+
+        // ✅ Known runtime error
+        if (error instanceof Error) {
+            return NextResponse.json(
+                { message: error.message },
+                { status: 400 }
+            );
+        }
+
+        // ❌ Unknown error
+        return NextResponse.json(
+            { message: "Something went wrong" },
+            { status: 500 }
+        );
+    }
 }

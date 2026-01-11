@@ -72,8 +72,13 @@ export async function changeUserPassword(
         throw new Error("Current password is incorrect");
     }
 
-    if (data.currentPassword === data.newPassword) {
-        throw new Error("New password must be different");
+    const isSamePassword = await bcrypt.compare(
+        data.newPassword,
+        user.password
+    );
+
+    if (isSamePassword) {
+        throw new Error("New password must be different from current password");
     }
 
     const hashedPassword = await bcrypt.hash(data.newPassword, 10);
