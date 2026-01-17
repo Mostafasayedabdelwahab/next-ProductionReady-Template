@@ -41,9 +41,29 @@ export async function sendResetPasswordEmail(
   });
 }
 
+export async function sendEmailVerificationEmail(
+  email: string,
+  resetUrl: string
+) {
+  await mailer.sendMail({
+    from: process.env.EMAIL_FROM,
+    to: email,
+    subject: "Verify your email address",
+    html: `
+      <div style="font-family:Arial; line-height:1.6">
+        <h2>Verify your email address</h2>
+        <p>Click the link below to verify your email:</p>
+        <a href="${resetUrl}">${resetUrl}</a>
+        <p>If you didn't request this, ignore this email.</p>
+      </div>
+    `,
+  });
+}
+
+
+
 
 import nodemailer from "nodemailer";
-
 
 export const mailer = nodemailer.createTransport({
   host: process.env.SMTP_HOST,

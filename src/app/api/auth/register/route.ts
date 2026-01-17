@@ -18,7 +18,7 @@ export async function POST(req: Request) {
         // 3️⃣ نرجّع response ناجح
         return NextResponse.json(
             {
-                message: "User registered successfully",
+                message: "Account created. Please verify your email.",
                 user,
             },
             { status: 201 }

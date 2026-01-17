@@ -29,7 +29,7 @@ export async function middleware(req: NextRequest) {
     }
 
     // /login
-    if (pathname.startsWith("/login") || pathname.startsWith("/register")){
+    if (pathname.startsWith("/login") || pathname.startsWith("/register") || pathname.startsWith("/verify-email-info") || pathname.startsWith("/verify-email")) {
         // لو  عامل تسجيل دخول
         if (token) {
             return NextResponse.redirect(
@@ -71,6 +71,8 @@ export const config = {
     matcher: [
         "/login",
         "/register",
+        "/verify-email-info",
+        "/verify-email",
         "/profile",
         "/dashboard/:path*",
     ],

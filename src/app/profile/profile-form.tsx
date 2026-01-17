@@ -17,18 +17,22 @@ export function ProfileForm({ profile, email }: ProfileFormProps) {
     const [phone, setPhone] = useState(profile.phone ?? "");
     const [address, setAddress] = useState(profile.address ?? "");
     const [image, setImage] = useState(profile?.image ?? "");
-    const [message, setMessage] = useState("");
 
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [removing, setRemoving] = useState(false);
 
     const [passwordLoading, setPasswordLoading] = useState(false);
-    const [passwordMessage, setPasswordMessage] = useState("");
 
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+
+    const [errorPassword, setErrorPassword] = useState("");
+    const [successPassword, setSuccessPassword] = useState("");
+
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
     async function handleAvatarUpload(
         e: React.ChangeEvent<HTMLInputElement>
@@ -86,7 +90,6 @@ export function ProfileForm({ profile, email }: ProfileFormProps) {
     async function handleChangePassword(e: React.FormEvent) {
         e.preventDefault();
         setPasswordLoading(true);
-        setPasswordMessage("");
 
         const res = await fetch("/api/profile/change-password", {
             method: "PATCH",
@@ -100,14 +103,19 @@ export function ProfileForm({ profile, email }: ProfileFormProps) {
 
         const data = await res.json();
 
+      
+
         if (!res.ok) {
-            setPasswordMessage(data.message);
+            setErrorPassword(data.message);
+            setSuccessPassword("");
         } else {
-            setPasswordMessage("Password updated successfully");
+            setSuccessPassword("Password updated successfully");
+            setErrorPassword("");
             setCurrentPassword("");
             setNewPassword("");
             setConfirmPassword("");
         }
+
 
         setPasswordLoading(false);
     }
@@ -116,7 +124,6 @@ export function ProfileForm({ profile, email }: ProfileFormProps) {
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setSaving(true);
-        setMessage("");
 
         const res = await fetch("/api/profile", {
             method: "PATCH",
@@ -124,11 +131,15 @@ export function ProfileForm({ profile, email }: ProfileFormProps) {
             body: JSON.stringify({ name, phone, address, image }),
         });
 
-        setMessage(
-            res.ok
-                ? "Profile updated successfully"
-                : "Something went wrong"
-        );
+        const data = await res.json();
+
+        if (!res.ok) {
+            setError(data.message);
+            setSuccess("");
+        } else {
+            setSuccess("Profile updated successfully");
+            setError("");
+        }
 
         setSaving(false);
     }
@@ -247,9 +258,15 @@ export function ProfileForm({ profile, email }: ProfileFormProps) {
                                 />
                             </div>
 
-                            {message && (
-                                <p className="md:col-span-2 text-sm text-green-600">
-                                    {message}
+                            {error && (
+                                <p className="text-sm text-red-600">
+                                    {error}
+                                </p>
+                            )}
+
+                            {success && (
+                                <p className="text-sm text-green-600">
+                                    {success}
                                 </p>
                             )}
 
@@ -302,9 +319,16 @@ export function ProfileForm({ profile, email }: ProfileFormProps) {
                             onChange={(e) => setConfirmPassword(e.target.value)}
                         />
 
-                        {passwordMessage && (
-                            <p className="text-sm text-red-500">
-                                {passwordMessage}
+
+                        {errorPassword && (
+                            <p className="text-sm text-red-600">
+                                {errorPassword}
+                            </p>
+                        )}
+
+                        {successPassword && (
+                            <p className="text-sm text-green-600">
+                                {successPassword}
                             </p>
                         )}
 

@@ -14,9 +14,12 @@ import Link from "next/link";
 
 
 
+
+
 export default function LoginPage() {
     const router = useRouter();
     const [serverError, setServerError] = useState("");
+    const [serverCooldown, setServerCooldown] = useState("");
 
     const {
         register,
@@ -25,6 +28,9 @@ export default function LoginPage() {
     } = useForm<LoginInput>({
         resolver: zodResolver(loginSchema),
     });
+
+    const [needsVerification, setNeedsVerification] = useState(false);
+
 
     async function onSubmit(data: LoginInput) {
         setServerError("");
@@ -35,13 +41,46 @@ export default function LoginPage() {
             redirect: false,
         });
 
+        if (result?.error === "EMAIL_NOT_VERIFIED") {
+            setNeedsVerification(true);
+            setServerError("Please verify your email before logging in.");
+            return;
+        }
+
         if (result?.error) {
-            setServerError("Invalid email or password");
+            setServerError(result.error);
             return;
         }
 
         router.push("/profile");
     }
+
+    async function handleResendVerification() {
+        setServerError("");
+        setServerCooldown("");
+
+        const res = await fetch("/api/auth/resend-verification", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: localStorage.getItem("email"),
+            }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            // 👈 هنا هيظهر cooldown message
+            setServerError(data.message || "Something went wrong");
+            return;
+        }
+
+        setServerCooldown(
+            data.message || "Verification email sent. Please check your inbox."
+        );
+        setServerError("");
+    }
+
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
@@ -59,11 +98,28 @@ export default function LoginPage() {
                     </p>
                 </div>
 
+
+
                 {/* Server error */}
                 {serverError && (
                     <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">
                         {serverError}
                     </p>
+                )}
+
+                {serverCooldown && (
+                    <p className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-600">
+                        {serverCooldown}
+                    </p>
+                )}
+
+                {needsVerification && (
+                    <button
+                        onClick={handleResendVerification}
+                        className="text-sm text-blue-600 hover:underline"
+                    >
+                        Resend verification email
+                    </button>
                 )}
 
                 {/* Email */}

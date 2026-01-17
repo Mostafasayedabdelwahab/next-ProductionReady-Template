@@ -40,8 +40,10 @@ export default function RegisterPage() {
             return;
         }
 
+        localStorage.setItem("email", data.email);
+
         // بعد التسجيل نوديه على login
-        router.push("/login");
+        router.push("/verify-email-info");
     }
 
     return (
