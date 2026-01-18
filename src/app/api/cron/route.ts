@@ -1,18 +1,19 @@
-// src/app/api/cron/cleanup/route.ts
-import { headers } from "next/headers";
-import { cleanupExpiredTokens, cleanupUnverifiedUsers } from "@/features/cron/cleanup.service";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import {
+  cleanupExpiredTokens,
+  cleanupUnverifiedUsers,
+} from "@/features/cron/cleanup.service";
 
-export async function POST() {
-  const h = headers();
-  const ua = (await h).get("user-agent") || "";
-
-  // تأكيد إنه من Vercel
-  if (!ua.toLowerCase().includes("vercel")) {
-    return new Response("Forbidden", { status: 403 });
+export async function GET(request: NextRequest) {
+  const authHeader = request.headers.get("authorization");
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return new Response("Unauthorized", {
+      status: 401,
+    });
   }
-
   await cleanupExpiredTokens();
   await cleanupUnverifiedUsers();
 
-  return Response.json({ success: true });
+  return NextResponse.json("Cron Job ", { status: 200 });
 }
