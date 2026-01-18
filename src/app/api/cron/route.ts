@@ -4,8 +4,12 @@ import {
   cleanupUnverifiedUsers,
 } from "@/features/cron/cleanup.service";
 
-export async function GET() {
-  console.log("CRON HIT", new Date().toISOString());
+import { requireCron } from "@/lib/guards";
+
+export async function GET(req: Request) {
+
+  requireCron(req);
+  
   await cleanupExpiredTokens();
   await cleanupUnverifiedUsers();
 

@@ -25,6 +25,7 @@ model User {
   name          String?
   role          Role      @default(USER)
   emailVerified DateTime?
+  isActive      Boolean  @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
