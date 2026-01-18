@@ -4,12 +4,8 @@ import {
   cleanupUnverifiedUsers,
 } from "@/features/cron/cleanup.service";
 
-import { requireCron } from "@/lib/guards";
 
-export async function GET(req: Request) {
-
-  requireCron(req);
-  
+export async function GET() {
   await cleanupExpiredTokens();
   await cleanupUnverifiedUsers();
 
