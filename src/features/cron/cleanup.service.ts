@@ -15,7 +15,8 @@ export async function cleanupExpiredTokens() {
 }
 
 export async function cleanupUnverifiedUsers() {
-  const sevenDaysAgo = new Date(Date.now() - 1000 * 60 * 60 * 12 * 1);
+  // ! مهم نعدلو ل 7 days بدل 1 day
+  const sevenDaysAgo = new Date(Date.now() - 1000 * 60 );
 
   await prisma.user.deleteMany({
     where: {
