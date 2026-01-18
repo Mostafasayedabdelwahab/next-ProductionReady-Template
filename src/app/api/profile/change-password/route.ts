@@ -3,8 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { changeUserPassword } from "@/features/profile/profile.service";
 import { ZodError } from "zod";
-
 export async function PATCH(req: Request) {
+
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {

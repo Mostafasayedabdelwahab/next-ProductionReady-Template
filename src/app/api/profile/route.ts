@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { ZodError } from "zod";
 
-import { authOptions } from "@/lib/auth";
 import { getOrCreateProfile, updateUserProfile, } from "@/features/profile/profile.service";
+
+import { requireVerifiedUser } from "@/lib/guards";
+
 
 /**
  * ======================
@@ -12,18 +13,9 @@ import { getOrCreateProfile, updateUserProfile, } from "@/features/profile/profi
  * Get current user profile
  */
 export async function GET() {
-    const session = await getServerSession(authOptions);
+    const user = await requireVerifiedUser();
 
-    if (!session?.user?.id) {
-        return NextResponse.json(
-            { message: "Unauthorized" },
-            { status: 401 }
-        );
-    }
-
-    const profile = await getOrCreateProfile(
-        session.user.id
-    );
+    const profile = await getOrCreateProfile(user.id);
 
     return NextResponse.json(profile);
 }
@@ -35,20 +27,12 @@ export async function GET() {
  * Update current user profile
  */
 export async function PATCH(req: Request) {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
-        return NextResponse.json(
-            { message: "Unauthorized" },
-            { status: 401 }
-        );
-    }
-
+    const user = await requireVerifiedUser();
     try {
         const body = await req.json();
 
         const updatedProfile = await updateUserProfile(
-            session.user.id,
+            user.id,
             body
         );
 
