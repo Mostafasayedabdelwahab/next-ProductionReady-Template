@@ -13,7 +13,13 @@ import { requireVerifiedUser } from "@/lib/guards";
  * Get current user profile
  */
 export async function GET() {
-    const user = await requireVerifiedUser();
+    const result = await requireVerifiedUser();
+
+    if (result instanceof Response) {
+      return result;
+    }
+
+    const user = result;
 
     const profile = await getOrCreateProfile(user.id);
 
@@ -27,7 +33,13 @@ export async function GET() {
  * Update current user profile
  */
 export async function PATCH(req: Request) {
-    const user = await requireVerifiedUser();
+    const result = await requireVerifiedUser();
+
+    if (result instanceof Response) {
+      return result;
+    }
+
+    const user = result;
     try {
         const body = await req.json();
 
