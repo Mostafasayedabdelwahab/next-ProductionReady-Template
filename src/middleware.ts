@@ -59,6 +59,11 @@ export async function middleware(req: NextRequest) {
      * ✅ السماح بباقي الريكوستات
      * ======================================
      */
+
+    if (req.nextUrl.pathname.startsWith("/api/cron")) {
+      return NextResponse.next();
+    }
+
     return NextResponse.next();
 }
 
