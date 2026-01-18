@@ -53,7 +53,7 @@ export function ProfileForm({ profile, email }: ProfileFormProps) {
 
             const data = await res.json();
 
-            if (!res.ok) throw new Error(data.message);
+            if (!res.ok) throw new Error(data.message || "Upload failed");
 
             setImage(data.imageUrl);
 
@@ -62,8 +62,12 @@ export function ProfileForm({ profile, email }: ProfileFormProps) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ image: data.imageUrl }),
             });
-        } catch {
-            alert("Failed to upload image");
+        } catch (error) {
+            if (error instanceof Error) {
+                alert(error.message);
+            } else {
+                alert("Failed to upload image");
+            }
         } finally {
             setUploading(false);
         }
@@ -73,15 +77,25 @@ export function ProfileForm({ profile, email }: ProfileFormProps) {
         setRemoving(true);
 
         try {
-            await fetch("/api/profile", {
+            const res = await fetch("/api/profile", {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ image: null }),
             });
 
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Failed to remove image");
+            }
+
             setImage("");
-        } catch {
-            alert("Failed to remove image");
+        } catch (error) {
+            if (error instanceof Error) {
+                alert(error.message);
+            } else {
+                alert("Failed to remove image");
+            }
         } finally {
             setRemoving(false);
         }
