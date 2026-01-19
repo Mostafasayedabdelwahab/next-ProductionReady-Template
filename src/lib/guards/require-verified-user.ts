@@ -36,7 +36,7 @@ export async function requireVerifiedUser() {
   // 5 Session invalidation
   // sessionVersion
   if (user.sessionVersion !== session.user.sessionVersion) {
-    return NextResponse.json({ message: "Session expired" }, { status: 401 });
+    return NextResponse.json({ message: "Session expired please log in again " }, { status: 401 });
   }
 
   // passwordChangedAt
@@ -45,7 +45,7 @@ export async function requireVerifiedUser() {
     session.user.passwordChangedAt &&
     user.passwordChangedAt > new Date(session.user.passwordChangedAt)
   ) {
-    return NextResponse.json({ message: "Session expired" }, { status: 401 });
+    return NextResponse.json({ message: "Session expired please log in again " }, { status: 401 });
   }
 
   // 6  user جاهز 
