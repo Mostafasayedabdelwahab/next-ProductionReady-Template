@@ -3,19 +3,19 @@ import { registerUser } from "@/features/user/user.service";
 
 export async function POST(req: Request) {
     try {
-        // 1️⃣ نقرأ الـ body
+        // 1   body
         const body = await req.json();
 
         const { email, password, name } = body;
 
-        // 2️⃣ ننادي الـ service
+        // 2  service
         const user = await registerUser({
             email,
             password,
             name,
         });
 
-        // 3️⃣ نرجّع response ناجح
+        // 3 response 
         return NextResponse.json(
             {
                 message: "Account created. Please verify your email.",
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
             { status: 201 }
         );
     } catch (error) {
-        // 4️⃣ Error handling
+        //  Error handling
         if (error instanceof Error) {
             return NextResponse.json(
                 { message: error.message },

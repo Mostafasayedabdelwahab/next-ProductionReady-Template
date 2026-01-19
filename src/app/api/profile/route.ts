@@ -50,7 +50,7 @@ export async function PATCH(req: Request) {
 
         return NextResponse.json(updatedProfile);
     } catch (error: unknown) {
-        // ✅ Zod validation error
+        //  Zod validation error
         if (error instanceof ZodError) {
             return NextResponse.json(
                 {
@@ -60,7 +60,7 @@ export async function PATCH(req: Request) {
             );
         }
 
-        // ✅ Known runtime error
+        //  Known runtime error
         if (error instanceof Error) {
             return NextResponse.json(
                 { message: error.message },
@@ -68,7 +68,7 @@ export async function PATCH(req: Request) {
             );
         }
 
-        // ❌ Unknown error
+        //  Unknown error
         return NextResponse.json(
             { message: "Something went wrong" },
             { status: 500 }

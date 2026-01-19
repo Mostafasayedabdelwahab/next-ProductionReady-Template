@@ -9,6 +9,7 @@ import { sendEmailVerificationEmail, sendResetPasswordEmail } from "@/lib/mail";
 
 
 export async function registerUser(input: unknown) {
+    
     // 1️⃣ Validation حقيقي
     const data = registerApiSchema.parse(input);
 
@@ -77,9 +78,6 @@ export async function forgotPassword(email: string) {
 
   // 🛡️ Security: نرجع بدون error
   if (!user) return;
-
-  // 2️⃣ (اختياري لكن مهم) امسح أي توكن قديم
-  // await deletePasswordResetToken(user.id);
 
   // ⏱️ cooldown = 60 ثانية
   const lastToken = await findLastPasswordResetToken(user.id);

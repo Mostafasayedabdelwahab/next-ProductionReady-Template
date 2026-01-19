@@ -4,14 +4,14 @@ import { authOptions } from "../auth";
 import { NextResponse } from "next/server";
 
 export async function requireVerifiedUser() {
-  // 1) هات الـ session من NextAuth
+  // 1)   session من NextAuth
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user?.id) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  // 2) هات الـ user الحقيقي من الداتابيز
+  // 2)  user الحقيقي من الداتابيز
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
   });
@@ -27,9 +27,27 @@ export async function requireVerifiedUser() {
 
   // 4) email verified؟
   if (!user.emailVerified) {
-    return NextResponse.json({ message: "Email not verified" }, { status: 403 });
+    return NextResponse.json(
+      { message: "Email not verified" },
+      { status: 403 },
+    );
   }
 
-  // 5) رجّع user جاهز للاستخدام
+  // 5 Session invalidation
+  // sessionVersion
+  if (user.sessionVersion !== session.user.sessionVersion) {
+    return NextResponse.json({ message: "Session expired" }, { status: 401 });
+  }
+
+  // passwordChangedAt
+  if (
+    user.passwordChangedAt &&
+    session.user.passwordChangedAt &&
+    user.passwordChangedAt > new Date(session.user.passwordChangedAt)
+  ) {
+    return NextResponse.json({ message: "Session expired" }, { status: 401 });
+  }
+
+  // 6  user جاهز 
   return user;
 }

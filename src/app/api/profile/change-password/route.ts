@@ -8,15 +8,13 @@ export async function PATCH(req: Request) {
     if (result instanceof Response) return result;
     const user = result;
 
-   
-
     try {
         const body = await req.json();
         await changeUserPassword(user.id, body);
 
         return NextResponse.json({ success: true });
     } catch (error) {
-        // ✅ Zod validation error
+        //  Zod validation error
         if (error instanceof ZodError) {
             return NextResponse.json(
                 { message: error.issues[0].message },
@@ -24,7 +22,7 @@ export async function PATCH(req: Request) {
             );
         }
 
-        // ✅ Business logic error
+        //  Business logic error
         if (error instanceof Error) {
             return NextResponse.json(
                 { message: error.message },
