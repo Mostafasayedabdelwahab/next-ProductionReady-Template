@@ -1,4 +1,4 @@
-# Mini SaaS – Production Ready Template
+# Next.js – Production Ready Template
 
 Production-ready Next.js SaaS with secure authentication
 and clean architecture.
