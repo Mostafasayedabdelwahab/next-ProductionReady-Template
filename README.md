@@ -5,14 +5,7 @@ and clean architecture.
 
 ## Getting Started
 
-First, run the development server:
-
-```bash
-npm install
-npx prisma migrate dev
-npm run dev
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+First, run the development server: see `SETUP.md`.
 
 ## Tech Stack
 
@@ -70,6 +63,7 @@ The project follows a clean, scalable architecture:
 ## Environment Variables
 
 Required environment variables:
+
 - DATABASE_URL
 - NEXTAUTH_SECRET
 - NEXTAUTH_URL
@@ -91,4 +85,7 @@ Required environment variables:
 - Rate limiting for auth endpoints
 - Audit logs for security events
 - Role-based access control
+
+```
+
 ```
