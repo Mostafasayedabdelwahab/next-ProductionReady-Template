@@ -15,9 +15,9 @@ Make sure you have the following installed:
 - PostgreSQL database (Neon / Supabase / Local)
 - Git
 
-Check versions:
 
 ```bash
+Check versions:
 node -v
 npm -v
 

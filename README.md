@@ -5,7 +5,7 @@ and clean architecture.
 
 ## Getting Started
 
-First, run the development server: see `SETUP.md`.
+see `SETUP.md`.
 
 ## Tech Stack
 
@@ -89,3 +89,5 @@ Required environment variables:
 ```
 
 ```
+## Versions
+- v1.0.0 – Base auth template
