@@ -18,37 +18,36 @@ export const createProfileSchema = z.object({
 
 
 export const updateProfileSchema = z.object({
-    name: z
-        .string()
-        .trim()
-        .min(2, "Name must be at least 2 characters")
-        .max(50, "Name is too long")
-        .nullable()
-        .optional(),
+  name: z
+    .string()
+    .trim()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name is too long")
+    .nullable()
+    .optional(),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^[0-9+\-\s()]{8,20}$/, "Invalid phone number")
+    .nullable()
+    .optional()
+    .or(z.literal("")),
 
-    phone: z
-        .string()
-        .trim()
-        .regex(
-            /^[0-9+\-\s()]{8,20}$/,
-            "Invalid phone number"
-        )
-        .nullable()
-        .optional(),
+  address: z
+    .string()
+    .trim()
+    .min(5, "Address is too short")
+    .max(200, "Address is too long")
+    .nullable()
+    .optional()
+    .or(z.literal("")),
 
-    address: z
-        .string()
-        .trim()
-        .min(5, "Address is too short")
-        .max(200, "Address is too long")
-        .nullable()
-        .optional(),
-
-    image: z
-        .string()
-        .url("Invalid image URL")
-        .nullable()
-        .optional(),
+  image: z
+    .string()
+    .url("Invalid image URL")
+    .nullable()
+    .optional()
+    .or(z.literal("")),
 });
 
 

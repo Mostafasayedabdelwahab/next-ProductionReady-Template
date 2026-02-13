@@ -19,7 +19,15 @@ export async function getProfileByUserId(
     userId: string
 ): Promise<Profile | null> {
     return prisma.profile.findUnique({
-        where: { userId },
+      where: { userId },
+      include: {
+        user: {
+          select: {
+            email: true,
+            isActive: true,
+          },
+        },
+      },
     });
 }
 

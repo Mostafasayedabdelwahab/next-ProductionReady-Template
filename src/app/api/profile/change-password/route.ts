@@ -1,38 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { changeUserPassword } from "@/features/profile/profile.service";
-import { ZodError } from "zod";
 import { requireVerifiedUser } from "@/lib/guards";
+import { handleApiError } from "@/lib/utils/api-helper";
+
 export async function PATCH(req: Request) {
+  try {
+    // 1. الحماية: التأكد من اليوزر وصلاحيته
+    const user = await requireVerifiedUser();
 
-    const result = await requireVerifiedUser();
-    if (result instanceof Response) return result;
-    const user = result;
+    // 2. استلام البيانات
+    const body = await req.json();
 
-    try {
-        const body = await req.json();
-        await changeUserPassword(user.id, body);
+    // 3. تنفيذ العملية من خلال السيرفس
+    await changeUserPassword(user.id, body);
 
-        return NextResponse.json({ success: true });
-    } catch (error) {
-        //  Zod validation error
-        if (error instanceof ZodError) {
-            return NextResponse.json(
-                { message: error.issues[0].message },
-                { status: 400 }
-            );
-        }
-
-        //  Business logic error
-        if (error instanceof Error) {
-            return NextResponse.json(
-                { message: error.message },
-                { status: 400 }
-            );
-        }
-
-        return NextResponse.json(
-            { message: "Something went wrong" },
-            { status: 500 }
-        );
-    }
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    // 4. هندلة الخطأ بشكل موحد
+    return handleApiError(error);
+  }
 }
