@@ -28,7 +28,7 @@ export async function getProfileByUserId(
           },
         },
       },
-    });
+    }) as Promise<Profile | null>;
 }
 
 /**

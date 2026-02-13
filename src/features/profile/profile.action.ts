@@ -10,29 +10,45 @@ import { requireVerifiedUser } from "@/lib/guards";
 import { ZodError } from "zod";
 
 // استيراد المترجم والأكواد
-import { getErrorMessage } from "@/lib/constants/errors";
+import { ERROR_CODES, getErrorMessage } from "@/lib/constants/errors";
 import { changePasswordSchema, updateProfileSchema } from "./profile.schema";
-import { ActionResponse, ChangePasswordInput, Profile, UpdateProfileInput } from "./profile.types";
+import { ActionResponse, Profile } from "./profile.types";
 
-function formatError(error: unknown): { success: false; error: string } {
+/**
+ * دالة مساعدة لتوحيد شكل الأخطاء الراجعة للـ Client
+ * يفضل مستقبلاً نقلها لملف @/lib/utils/action-utils.ts
+ */
+// يفضل وضع هذه الدالة في ملف helper مشترك واستدعائها في كل الـ Actions
+function formatError(error: unknown): { success: false; error: string; code: string } {
   if (error instanceof ZodError) {
     return {
       success: false,
+      code: ERROR_CODES.INVALID_INPUT,
       error: error.issues[0]?.message ?? "Validation error",
     };
   }
+  
   if (error instanceof Error) {
-    return { success: false, error: getErrorMessage(error.message) };
+    return { 
+      success: false, 
+      code: error.message, // الكود الخام (مثلاً: UNAUTHORIZED)
+      error: getErrorMessage(error.message) // الرسالة المترجمة
+    };
   }
-  return { success: false, error: "Unknown error occurred" };
+
+  return { 
+    success: false, 
+    code: ERROR_CODES.SERVER_ERROR, 
+    error: "Unknown error occurred" 
+  };
 }
 
 export async function getProfileAction(): Promise<Profile> {
-  // الـ Guard هنا هيرمي Error لو فيه مشكلة، والأكشن هيقف تماماً
-  const user = await requireVerifiedUser(); // لازم الـ Guard ده يرمي (throw) خطأ لو اليوزر مش موجود
+  // الـ Guard هنا هيرمي Error (مثل UNAUTHORIZED) والكود هيتوقف
+  const user = await requireVerifiedUser();
   const profile = await getOrCreateProfile(user.id);
 
-  if (!profile) throw new Error("PROFILE_NOT_FOUND"); // دي اللي هتخلي الـ catch تشتغل
+  if (!profile) throw new Error("PROFILE_NOT_FOUND");
 
   return profile;
 }
@@ -41,9 +57,10 @@ export async function updateProfileAction(
   data: unknown,
 ): Promise<ActionResponse<Profile>> {
   try {
-    const parsed: UpdateProfileInput = updateProfileSchema.parse(data);
-
     const user = await requireVerifiedUser();
+
+    // عمل الـ Parse هنا أو جوه الـ Service كلاهما صحيح
+    const parsed = updateProfileSchema.parse(data);
     const updated = await updateUserProfile(user.id, parsed);
 
     revalidatePath("/profile");
@@ -57,10 +74,12 @@ export async function changePasswordAction(
   input: unknown,
 ): Promise<ActionResponse<void>> {
   try {
-    const parsed: ChangePasswordInput = changePasswordSchema.parse(input);
     const user = await requireVerifiedUser();
+
+    // التحقق من البيانات قبل إرسالها للسيرفس
+    const parsed = changePasswordSchema.parse(input);
     await changeUserPassword(user.id, parsed);
-    
+
     return {
       success: true,
       message: "Password changed successfully.",

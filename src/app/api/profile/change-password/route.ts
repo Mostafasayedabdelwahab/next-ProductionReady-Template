@@ -1,23 +1,21 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { changeUserPassword } from "@/features/profile/profile.service";
 import { requireVerifiedUser } from "@/lib/guards";
 import { handleApiError } from "@/lib/utils/api-helper";
+import { ChangePasswordInput } from "@/features/profile/profile.types";
 
 export async function PATCH(req: Request) {
   try {
-    // 1. الحماية: التأكد من اليوزر وصلاحيته
     const user = await requireVerifiedUser();
+    const body: ChangePasswordInput = await req.json();
 
-    // 2. استلام البيانات
-    const body = await req.json();
-
-    // 3. تنفيذ العملية من خلال السيرفس
     await changeUserPassword(user.id, body);
 
-    return NextResponse.json({ success: true });
-  } catch (error: any) {
-    // 4. هندلة الخطأ بشكل موحد
+    return NextResponse.json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  } catch (error) {
     return handleApiError(error);
   }
 }

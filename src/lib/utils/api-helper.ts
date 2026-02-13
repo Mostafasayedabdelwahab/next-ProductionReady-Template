@@ -6,37 +6,37 @@ export function handleApiError(error: unknown) {
   // Validation Errors
   if (error instanceof ZodError) {
     return NextResponse.json(
-      { message: error.issues[0]?.message ?? "Validation error" },
+      {
+        message: error.issues[0]?.message ?? "Validation error",
+        code: ERROR_CODES.INVALID_INPUT,
+      },
       { status: 400 },
     );
   }
-
+  // Mapping Status Codes
   if (error instanceof Error) {
+    const code = error.message;
     const message = getErrorMessage(error.message);
 
-    // Authentication Errors (401)
+    let status = 400;
     if (
-      error.message === ERROR_CODES.UNAUTHORIZED ||
-      error.message === ERROR_CODES.SESSION_EXPIRED
-    ) {
-      return NextResponse.json({ message }, { status: 401 });
-    }
-
-    // Authorization Errors (403)
+      code === ERROR_CODES.UNAUTHORIZED ||
+      code === ERROR_CODES.SESSION_EXPIRED
+    )
+      status = 401;
     if (
-      error.message === ERROR_CODES.ACCOUNT_DISABLED ||
-      error.message === ERROR_CODES.EMAIL_NOT_VERIFIED
-    ) {
-      return NextResponse.json({ message }, { status: 403 });
-    }
+      code === ERROR_CODES.ACCOUNT_DISABLED ||
+      code === ERROR_CODES.EMAIL_NOT_VERIFIED
+    )
+      status = 403;
+    if (code === ERROR_CODES.NOT_FOUND) status = 404;
 
-    // Default business / app error
-    return NextResponse.json({ message }, { status: 400 });
+    return NextResponse.json({ message, code }, { status });
   }
 
   // Unknown fatal error
   return NextResponse.json(
-    { message: "Internal Server Error" },
+    { message: "Internal Server Error", code: ERROR_CODES.SERVER_ERROR },
     { status: 500 },
   );
 }

@@ -2,32 +2,35 @@
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { authOptions } from "../auth";
+import { ERROR_CODES } from "@/lib/constants/errors";
 
 export async function requireVerifiedUser() {
   const session = await getServerSession(authOptions);
 
   // 1) تشيك السيشن الأساسي
   if (!session || !session.user?.id) {
-    throw new Error("UNAUTHORIZED");
+    throw new Error(ERROR_CODES.UNAUTHORIZED);
   }
 
-  // 2) نجيب اليوزر 
+  // 2) جلب اليوزر من الداتابيز
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
   });
 
-  if (!user) throw new Error("UNAUTHORIZED");
+  if (!user) {
+    throw new Error(ERROR_CODES.UNAUTHORIZED);
+  }
 
-  // 3) الحساب مفعل؟
-  if (user.isActive === false) throw new Error("ACCOUNT_DISABLED");
+  // 3) الحساب معطل؟
+  if (user.isActive === false) {
+    throw new Error(ERROR_CODES.ACCOUNT_DISABLED);
+  }
 
-  // 4) الإيميل مفعل؟
-  if (!user.emailVerified) throw new Error("EMAIL_NOT_VERIFIED");
+  // 4) الإيميل غير مفعل؟
+  if (!user.emailVerified) {
+    throw new Error(ERROR_CODES.EMAIL_NOT_VERIFIED);
+  }
 
-  // 5) Session Invalidation 
-  // if (user.sessionVersion !== session.user.sessionVersion) {
-  //   throw new Error("SESSION_EXPIRED");
-  // }
-
+  // رجوع اليوزر بكل بياناته لاستخدامها في الأكشنز
   return user;
 }

@@ -8,6 +8,14 @@ export const ERROR_CODES = {
   INVALID_INPUT: "INVALID_INPUT",
   SERVER_ERROR: "SERVER_ERROR",
   NOT_FOUND: "NOT_FOUND",
+
+  INVALID_CURRENT_PASSWORD: "INVALID_CURRENT_PASSWORD",
+  SAME_PASSWORD_ERROR: "SAME_PASSWORD_ERROR",
+  PROFILE_NOT_FOUND: "PROFILE_NOT_FOUND",
+
+  FILE_TOO_LARGE: "FILE_TOO_LARGE",
+  INVALID_FILE_TYPE: "INVALID_FILE_TYPE",
+  UPLOAD_FAILED: "UPLOAD_FAILED",
 } as const;
 
 export const ERROR_MESSAGES: Record<string, string> = {
@@ -23,6 +31,15 @@ export const ERROR_MESSAGES: Record<string, string> = {
   [ERROR_CODES.SERVER_ERROR]:
     "An unexpected error occurred. Please try again later.",
   [ERROR_CODES.NOT_FOUND]: "The requested resource could not be found.",
+
+  [ERROR_CODES.INVALID_CURRENT_PASSWORD]: "Current password is incorrect.",
+  [ERROR_CODES.SAME_PASSWORD_ERROR]:
+    "New password cannot be the same as the old one.",
+  [ERROR_CODES.PROFILE_NOT_FOUND]: "Profile data not found.",
+
+  [ERROR_CODES.FILE_TOO_LARGE]: "File size is too large (Max 2MB)",
+  [ERROR_CODES.INVALID_FILE_TYPE]: "Invalid file type. Only images are allowed",
+  [ERROR_CODES.UPLOAD_FAILED]: "Failed to upload image to cloud storage",
 };
 
 /**
