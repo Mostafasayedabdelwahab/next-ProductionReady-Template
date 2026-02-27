@@ -7,13 +7,16 @@ export async function createUser(
   data: Pick<CreateUserInput, "email" | "password" | "name">,
 ) {
   return prisma.user.create({
-    data,
+    data: {
+      ...data,
+      email: data.email.toLowerCase().trim(),
+    },
   });
 }
 
-export async function findUserByEmail(email: string) {
+export async function findUniqueByEmail(email: string) {
   return prisma.user.findUnique({
-    where: { email },
+    where: { email: email.toLowerCase().trim() },
   });
 }
 
@@ -56,6 +59,7 @@ export async function getValidResetTokens() {
     where: {
       expiresAt: { gt: new Date() },
     },
+    //!! خطر
     include: { user: true },
   });
 }
@@ -123,5 +127,17 @@ export async function findLastEmailVerificationToken(userId: string) {
   return prisma.emailVerificationToken.findFirst({
     where: { userId },
     orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function findPasswordResetTokenByHash(token: string) {
+  return prisma.passwordResetToken.findUnique({
+    where: { token },
+  });
+}
+
+export async function findEmailVerificationTokenByHash(token: string) {
+  return prisma.emailVerificationToken.findUnique({
+    where: { token },
   });
 }

@@ -1,5 +1,7 @@
+import VerifyEmailClient from "@/features/user/_components/verify-email-client";
+import { verifyEmailAction } from "@/features/user/user.action"; // الأكشن بتاعنا
+
 import { Suspense } from "react";
-import VerifyEmailClient from "./verify-email-client";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +14,7 @@ export default function VerifyEmailPage() {
                 </div>
             }
         >
-            <VerifyEmailClient />
+            <VerifyEmailClient verifyEmailAction={verifyEmailAction} />
         </Suspense>
     );
 }

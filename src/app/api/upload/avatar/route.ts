@@ -68,8 +68,6 @@ export async function DELETE() {
   try {
     const user = await requireVerifiedUser();
 
-    // 1. حذف الصورة من Cloudinary
-    // بما إننا بنستخدم public_id ثابت "avatar" جوه فولدر اليوزر
     await cloudinary.uploader.destroy(`avatars/${user.id}/avatar`);
 
     return NextResponse.json({ success: true });

@@ -1,25 +1,24 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import {
-  getOrCreateProfile,
-  updateUserProfile,
-  changeUserPassword,
-} from "./profile.service";
+import * as profileService from "./profile.service";
 import { requireVerifiedUser } from "@/lib/guards";
 import { ZodError } from "zod";
 
-// استيراد المترجم والأكواد
+// Import error codes and translator
 import { ERROR_CODES, getErrorMessage } from "@/lib/constants/errors";
 import { changePasswordSchema, updateProfileSchema } from "./profile.schema";
 import { ActionResponse, Profile } from "./profile.types";
 
 /**
- * دالة مساعدة لتوحيد شكل الأخطاء الراجعة للـ Client
- * يفضل مستقبلاً نقلها لملف @/lib/utils/action-utils.ts
+ * Normalize errors returned to the client
+ * TODO: move to shared helper in the future
  */
-// يفضل وضع هذه الدالة في ملف helper مشترك واستدعائها في كل الـ Actions
-function formatError(error: unknown): { success: false; error: string; code: string } {
+function formatError(error: unknown): {
+  success: false;
+  error: string;
+  code: string;
+} {
   if (error instanceof ZodError) {
     return {
       success: false,
@@ -27,58 +26,65 @@ function formatError(error: unknown): { success: false; error: string; code: str
       error: error.issues[0]?.message ?? "Validation error",
     };
   }
-  
+
   if (error instanceof Error) {
-    return { 
-      success: false, 
-      code: error.message, // الكود الخام (مثلاً: UNAUTHORIZED)
-      error: getErrorMessage(error.message) // الرسالة المترجمة
+    return {
+      success: false,
+      code: error.message,
+      error: getErrorMessage(error.message),
     };
   }
 
-  return { 
-    success: false, 
-    code: ERROR_CODES.SERVER_ERROR, 
-    error: "Unknown error occurred" 
+  return {
+    success: false,
+    code: ERROR_CODES.SERVER_ERROR,
+    error: "Unknown error occurred",
   };
 }
 
+/**
+ * Get current user profile
+ */
 export async function getProfileAction(): Promise<Profile> {
-  // الـ Guard هنا هيرمي Error (مثل UNAUTHORIZED) والكود هيتوقف
   const user = await requireVerifiedUser();
-  const profile = await getOrCreateProfile(user.id);
+  const profile = await profileService.getOrCreateProfile(user.id);
 
   if (!profile) throw new Error("PROFILE_NOT_FOUND");
 
   return profile;
 }
 
+/**
+ * Update profile data
+ */
 export async function updateProfileAction(
   data: unknown,
 ): Promise<ActionResponse<Profile>> {
   try {
     const user = await requireVerifiedUser();
 
-    // عمل الـ Parse هنا أو جوه الـ Service كلاهما صحيح
     const parsed = updateProfileSchema.parse(data);
-    const updated = await updateUserProfile(user.id, parsed);
+    const updated = await profileService.updateUserProfile(user.id, parsed);
 
     revalidatePath("/profile");
+
     return { success: true, data: updated };
   } catch (error) {
     return formatError(error);
   }
 }
 
+/**
+ * Change user password
+ */
 export async function changePasswordAction(
   input: unknown,
 ): Promise<ActionResponse<void>> {
   try {
     const user = await requireVerifiedUser();
 
-    // التحقق من البيانات قبل إرسالها للسيرفس
     const parsed = changePasswordSchema.parse(input);
-    await changeUserPassword(user.id, parsed);
+    await profileService.changeUserPassword(user.id, parsed);
 
     return {
       success: true,

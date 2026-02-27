@@ -1,90 +1,77 @@
 import bcrypt from "bcryptjs";
-import { ERROR_CODES } from "@/lib/constants/errors"; // استيراد الأكواد المركزية
-import {
-  getUserNameById,
-  getUserById,
-  updateUserPassword,
-} from "../user/user.repository";
-import {
-  createProfile,
-  getProfileByUserId,
-  updateProfile,
-} from "./profile.repository";
-import {
-  createProfileSchema,
-  updateProfileSchema,
-  changePasswordSchema,
-} from "./profile.schema";
-import type {
-  CreateProfileInput,
-  UpdateProfileInput,
-  Profile,
-} from "./profile.types";
+import { ERROR_CODES } from "@/lib/constants/errors";
+import * as userRepo from "../user/user.repository";
+import * as profileRepo from "./profile.repository";
+import * as profileTypes from "./profile.types";
+import * as profileSchema from "./profile.schema";
 
 /**
- * جلب البروفايل أو إنشاؤه
+ * Get existing profile or create a new one
  */
-export async function getOrCreateProfile(userId: string): Promise<Profile> {
-  const existingProfile = await getProfileByUserId(userId);
+export async function getOrCreateProfile(
+  userId: string,
+): Promise<profileTypes.Profile> {
+  const existingProfile = await profileRepo.getProfileByUserId(userId);
 
   if (existingProfile) {
     return existingProfile;
   }
 
-  const name = await getUserNameById(userId);
+  const name = await userRepo.getUserNameById(userId);
 
-  // استخدام parse هنا ممكن يرمي ZodError والأكشن هيهندله
-  const data: CreateProfileInput = createProfileSchema.parse({
-    userId,
-    name: name ?? undefined,
-  });
+  const data: profileTypes.CreateProfileInput =
+    profileSchema.createProfileSchema.parse({
+      userId,
+      name: name ?? undefined,
+    });
 
-  return createProfile(data);
+  return profileRepo.createProfile(data);
 }
 
 /**
- * تحديث بيانات البروفايل
+ * Update user profile data
  */
 export async function updateUserProfile(
   userId: string,
   input: unknown,
-): Promise<Profile> {
-  const data: UpdateProfileInput = updateProfileSchema.parse(input);
-  return updateProfile(userId, data);
+): Promise<profileTypes.Profile> {
+  const data = profileSchema.updateProfileSchema.parse(input);
+  return profileRepo.updateProfile(userId, data);
 }
 
 /**
- * تغيير كلمة المرور
+ * Change user password
  */
-export async function changeUserPassword(userId: string, input: unknown) {
-  // 1. التحقق من صحة المدخلات (Zod)
-  const data = changePasswordSchema.parse(input);
+export async function changeUserPassword(
+  userId: string,
+  input: unknown,
+): Promise<void> {
+  // Validate input
+  const data = profileSchema.changePasswordSchema.parse(input);
 
-  // 2. جلب بيانات المستخدم
-  const user = await getUserById(userId);
+  // Get user
+  const user = await userRepo.getUserById(userId);
 
   if (!user || !user.password) {
     throw new Error(ERROR_CODES.NOT_FOUND);
   }
 
-  // 3. التحقق من كلمة المرور الحالية
+  // Verify current password
   const isValid = await bcrypt.compare(data.currentPassword, user.password);
 
   if (!isValid) {
-    // استخدمنا الثابت اللي ضفناه في ملف الـ constants
     throw new Error(ERROR_CODES.INVALID_CURRENT_PASSWORD);
   }
 
-  // 4. التحقق إن الباسورد الجديد مش هو هو القديم
+  // Prevent using the same password
   const isSamePassword = await bcrypt.compare(data.newPassword, user.password);
 
   if (isSamePassword) {
     throw new Error(ERROR_CODES.SAME_PASSWORD_ERROR);
   }
 
-  // 5. تشفير وحفظ الباسورد الجديد
+  // Hash and update password
   const hashedPassword = await bcrypt.hash(data.newPassword, 10);
 
-  // ملاحظة: بما إنك لغيت الـ sessionVersion، الـ Repository هنا بيحدث الباسورد فقط
-  await updateUserPassword(userId, hashedPassword);
+  await userRepo.updateUserPassword(userId, hashedPassword);
 }

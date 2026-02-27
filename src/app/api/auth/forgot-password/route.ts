@@ -1,27 +1,34 @@
 import { forgotPassword } from "@/features/user/user.service";
+import { handleApiError } from "@/lib/utils/api-helper";
 import { NextResponse } from "next/server";
 
-
 export async function POST(req: Request) {
-    try {
-      const { email } = await req.json();
+  try {
+    const body = await req.json();
+    const { email } = body;
 
-      await forgotPassword(email);
-
-      return NextResponse.json({
-        message: "If the email exists, a reset link was sent",
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        return NextResponse.json(
-          { message: error.message },
-          { status: 429 }, // Too Many Requests
-        );
-      }
-
+    // Basic guard to ensure email is provided
+    if (!email) {
       return NextResponse.json(
-        { message: "Something went wrong" },
-        { status: 500 },
+        { success: false, message: "Email is required" },
+        { status: 400 },
       );
     }
+
+    // Call service (handles cooldown and security internally)
+    await forgotPassword(email);
+
+    // Always return generic success message for security
+    return NextResponse.json(
+      {
+        success: true,
+        message:
+          "If an account exists with this email, a reset link has been sent.",
+      },
+      { status: 200 },
+    );
+  } catch (error) {
+    // Centralized error handling (e.g., COOLDOWN_ACTIVE)
+    return handleApiError(error);
+  }
 }

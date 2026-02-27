@@ -1,40 +1,28 @@
 import { NextResponse } from "next/server";
 import { registerUser } from "@/features/user/user.service";
+import { handleApiError } from "@/lib/utils/api-helper"; // ensure correct import path
 
 export async function POST(req: Request) {
-    try {
-        // 1   body
-        const body = await req.json();
+  try {
+    // 1️⃣ Get request body
+    const body = await req.json();
 
-        const { email, password, name } = body;
+    // 2️⃣ Call service (service handles Zod validation and password hashing)
+    const user = await registerUser(body);
 
-        // 2  service
-        const user = await registerUser({
-            email,
-            password,
-            name,
-        });
-
-        // 3 response 
-        return NextResponse.json(
-            {
-                message: "Account created. Please verify your email.",
-                user,
-            },
-            { status: 201 }
-        );
-    } catch (error) {
-        //  Error handling
-        if (error instanceof Error) {
-            return NextResponse.json(
-                { message: error.message },
-                { status: 400 }
-            );
-        }
-
-        return NextResponse.json(
-            { message: "Internal server error" },
-            { status: 500 }
-        );
-    }
+    // 3️⃣ Success response
+    return NextResponse.json(
+      {
+        success: true,
+        message:
+          "Account created successfully. Please check your email for verification.",
+        data: user, // SafeUser returned from service
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    // 4️⃣ Centralized error handling with error codes
+    // Helper automatically maps USER_ALREADY_EXISTS to 409, etc.
+    return handleApiError(error);
+  }
 }

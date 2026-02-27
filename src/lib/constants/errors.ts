@@ -16,6 +16,13 @@ export const ERROR_CODES = {
   FILE_TOO_LARGE: "FILE_TOO_LARGE",
   INVALID_FILE_TYPE: "INVALID_FILE_TYPE",
   UPLOAD_FAILED: "UPLOAD_FAILED",
+
+  USER_ALREADY_EXISTS: "USER_ALREADY_EXISTS",
+  INVALID_CREDENTIALS: "INVALID_CREDENTIALS",
+  COOLDOWN_ACTIVE: "COOLDOWN_ACTIVE",
+  INVALID_TOKEN: "INVALID_TOKEN",
+  SAME_PASSWORD: "SAME_PASSWORD",
+  USER_NOT_FOUND: "USER_NOT_FOUND",
 } as const;
 
 export const ERROR_MESSAGES: Record<string, string> = {
@@ -40,6 +47,13 @@ export const ERROR_MESSAGES: Record<string, string> = {
   [ERROR_CODES.FILE_TOO_LARGE]: "File size is too large (Max 2MB)",
   [ERROR_CODES.INVALID_FILE_TYPE]: "Invalid file type. Only images are allowed",
   [ERROR_CODES.UPLOAD_FAILED]: "Failed to upload image to cloud storage",
+
+  [ERROR_CODES.USER_ALREADY_EXISTS]: "User already exists",
+  [ERROR_CODES.INVALID_CREDENTIALS]: "Invalid email or password",
+  [ERROR_CODES.COOLDOWN_ACTIVE]: "Please wait before requesting another email",
+  [ERROR_CODES.INVALID_TOKEN]: "Invalid or expired token",
+  [ERROR_CODES.SAME_PASSWORD]: "New password must be different",
+  [ERROR_CODES.USER_NOT_FOUND]: "User not found",
 };
 
 /**

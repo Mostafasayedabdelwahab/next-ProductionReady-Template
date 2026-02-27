@@ -1,19 +1,22 @@
 import { z } from "zod";
-import {
-  changePasswordSchema,
-  createProfileSchema,
-  updateProfileSchema,
-} from "./profile.schema";
+import * as profileSchema from "./profile.schema";
 
-export type CreateProfileInput = z.infer<typeof createProfileSchema>;
-
-export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
-export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+/**
+ * Profile input types inferred from Zod schemas
+ */
+export type CreateProfileInput = z.infer<
+  typeof profileSchema.createProfileSchema
+>;
+export type UpdateProfileInput = z.infer<
+  typeof profileSchema.updateProfileSchema
+>;
+export type ChangePasswordInput = z.infer<
+  typeof profileSchema.changePasswordSchema
+>;
 
 /**
  * Profile entity returned from database
  */
-// تعديل بسيط في profile.types.ts
 export type Profile = {
   id: string;
   userId: string;
@@ -23,12 +26,17 @@ export type Profile = {
   image: string | null;
   createdAt: Date;
   updatedAt: Date;
-  // أضف ده عشان الـ Autocomplete والـ Types
+
+  // Optional relation for convenience in UI
   user?: {
     email: string;
     isActive: boolean;
   };
 };
+
+/**
+ * Unified action response shape (must match user.types)
+ */
 
 export type ActionResponse<T = void> =
   | { success: true; data?: T; message?: string }

@@ -81,7 +81,7 @@ model VerificationToken {
 
 model PasswordResetToken {
   id        String   @id @default(cuid())
-  token     String // hashed token
+  token     String   @unique// hashed token
   userId    String
   expiresAt DateTime
   createdAt DateTime @default(now())
@@ -109,7 +109,7 @@ model Profile {
 model EmailVerificationToken {
   id        String   @id @default(cuid())
   userId    String
-  token     String
+  token     String  @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
 

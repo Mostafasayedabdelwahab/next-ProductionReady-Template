@@ -76,6 +76,6 @@ export const mailer = nodemailer.createTransport({
 });
 
 await mailer.verify();
-console.log("SMTP READY");
+
 
 

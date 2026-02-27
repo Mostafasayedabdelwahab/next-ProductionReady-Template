@@ -20,7 +20,7 @@ export async function GET() {
 export async function PATCH(req: Request) {
   try {
     const user = await requireVerifiedUser();
-    const body: UpdateProfileInput = await req.json(); // Type safety للـ body
+    const body: UpdateProfileInput = await req.json(); // Type safety  body
 
     const updatedProfile = await updateUserProfile(user.id, body);
     return NextResponse.json(updatedProfile);

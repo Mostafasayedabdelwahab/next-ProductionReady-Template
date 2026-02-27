@@ -1,12 +1,13 @@
 import prisma from "@/lib/prisma";
-import { CreateProfileInput, UpdateProfileInput, Profile, } from "./profile.types";
+import * as profileTypes from "./profile.types";
+
 
 /**
  * Create profile for user
  */
 export async function createProfile(
-    data: CreateProfileInput
-): Promise<Profile> {
+    data: profileTypes.CreateProfileInput
+): Promise<profileTypes.Profile> {
     return prisma.profile.create({
         data,
     });
@@ -17,7 +18,7 @@ export async function createProfile(
  */
 export async function getProfileByUserId(
     userId: string
-): Promise<Profile | null> {
+): Promise<profileTypes.Profile | null> {
     return prisma.profile.findUnique({
       where: { userId },
       include: {
@@ -28,7 +29,7 @@ export async function getProfileByUserId(
           },
         },
       },
-    }) as Promise<Profile | null>;
+    }) as Promise<profileTypes.Profile | null>;
 }
 
 /**
@@ -36,8 +37,8 @@ export async function getProfileByUserId(
  */
 export async function updateProfile(
     userId: string,
-    data: UpdateProfileInput
-): Promise<Profile> {
+    data: profileTypes.UpdateProfileInput
+): Promise<profileTypes.Profile> {
     return prisma.profile.update({
         where: { userId },
         data,

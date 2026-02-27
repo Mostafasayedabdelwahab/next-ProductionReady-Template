@@ -1,5 +1,7 @@
 import { Suspense } from "react";
-import ResetPasswordClient from "./reset-password-client";
+import { resetPasswordAction } from "@/features/user/user.action";
+import ResetPasswordClient from "@/features/user/_components/reset-password-client";
+
 
 export default function ResetPasswordPage() {
     return (
@@ -8,7 +10,7 @@ export default function ResetPasswordPage() {
                 Loading...
             </div>
         }>
-            <ResetPasswordClient />
+            <ResetPasswordClient resetPasswordAction={resetPasswordAction} />
         </Suspense>
     );
 }
