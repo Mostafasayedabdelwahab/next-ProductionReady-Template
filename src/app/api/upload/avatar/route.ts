@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary";
-import type { UploadApiResponse } from "cloudinary";
 import { requireVerifiedUser } from "@/lib/guards";
 import { handleApiError } from "@/lib/utils/api-helper";
+
 import { ERROR_CODES } from "@/lib/constants/errors";
+import type { UploadApiResponse } from "cloudinary";
 
 export async function POST(req: Request) {
   try {
