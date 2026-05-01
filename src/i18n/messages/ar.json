@@ -1,0 +1,245 @@
+{
+    "navigation": {
+        "home": "الرئيسية",
+        "about": "من نحن",
+        "services": "خدماتنا",
+        "projects": "المشاريع",
+        "blog": "المدونة",
+        "faqs": "أسئلة شائعة",
+        "contact": "تواصل معنا",
+        "privacy": "سياسة الخصوصية",
+        "terms": "الشروط والأحكام"
+    },
+    "footer": {
+        "quickLinks": "روابط سريعة",
+        "overview": "نبذة",
+        "followUs": "تابعنا على",
+        "whatsapp": "دردشة واتساب",
+        "copyRight": "جميع الحقوق محفوظة"
+    },
+    "auth": {
+        "login": {
+            "title": "مرحبًا بعودتك!",
+            "description": "خطوة واحدة تفصلك عن تجربة استثنائية",
+            "emailLabel": "البريد الإلكتروني",
+            "passwordLabel": "كلمة المرور",
+            "submit": "تسجيل الدخول",
+            "submitting": "جاري الدخول...",
+            "forgotPassword": "نسيت كلمة المرور؟",
+            "noAccount": "ليس لديك حساب؟",
+            "registerLink": "إنشاء حساب"
+        },
+        "register": {
+            "title": "إنشاء حساب",
+            "description": "أدخل بياناتك للبدء",
+            "nameLabel": "الاسم بالكامل",
+            "emailLabel": "البريد الإلكتروني",
+            "passwordLabel": "كلمة المرور",
+            "confirmPasswordLabel": "تأكيد كلمة المرور",
+            "submit": "تسجيل",
+            "submitting": "جاري إنشاء الحساب...",
+            "haveAccount": "لديك حساب بالفعل؟",
+            "loginLink": "تسجيل الدخول"
+        },
+        "password": {
+            "current": "كلمة المرور الحالية",
+            "new": "كلمة المرور الجديدة",
+            "confirm": "تأكيد كلمة المرور",
+            "update": "تحديث كلمة المرور",
+            "updating": "جارٍ التحديث..."
+        },
+        "forgotPassword": {
+            "title": "نسيت كلمة المرور",
+            "description": "أدخل بريدك لإرسال رابط إعادة التعيين",
+            "emailLabel": "البريد الإلكتروني",
+            "submit": "إرسال الرابط",
+            "submitting": "جاري الإرسال..."
+        },
+        "resetPassword": {
+            "title": "إعادة تعيين كلمة المرور",
+            "description": "أدخل كلمة المرور الجديدة",
+            "passwordLabel": "كلمة المرور الجديدة",
+            "confirmPasswordLabel": "تأكيد كلمة المرور",
+            "submit": "إعادة التعيين",
+            "submitting": "جاري التحديث..."
+        },
+        "verifyEmail": {
+            "title": "تحقق من بريدك الإلكتروني",
+            "description": "تم إرسال رمز التحقق إلى بريدك الإلكتروني. يرجى إدخاله أدناه للتحقق من حسابك.",
+            "codeLabel": "رمز التحقق",
+            "submit": "تحقق من البريد الإلكتروني",
+            "submitting": "جارٍ التحقق...",
+            "resend": "إعادة إرسال الكود",
+            "resending": "جارٍ إعادة الإرسال..."
+        },
+        "logout": {
+            "label": "تسجيل الخروج",
+            "loading": "جارٍ تسجيل الخروج..."
+        },
+        "placeholders": {
+            "email": "أدخل بريدك الإلكتروني",
+            "password": "أدخل كلمة المرور",
+            "name": "أدخل اسمك بالكامل"
+        }
+    },
+   "profile": {
+    "title": "الملف الشخصي",
+    "phone": "رقم الهاتف",
+    "address": "العنوان",
+    "placeholders": {
+        "name": "أدخل اسمك بالكامل",
+        "phone": "01xxxxxxxxx",
+        "address": "المدينة، الشارع، المبنى"
+    }
+},
+    "unauthorized": {
+        "title": "غير مصرح بالدخول",
+        "description": "ليس لديك الصلاحيات الكافية للوصول إلى هذه الصفحة.",
+        "goBack": "العودة للصفحة الرئيسية"
+    },
+    "public": {
+        "security": {
+            "title": "الأمان",
+            "description": "إدارة كلمة المرور والجلسة"
+        }
+    },
+    "dashboard": {
+        "title": "لوحة التحكم",
+        "sidebar": {
+            "menu": "القائمة الرئيسية",
+            "overview": "الإحصائيات",
+            "sitePages": "صفحات الموقع",
+            "users": "إدارة المستخدمين",
+            "settings": "إعدادات الموقع"
+        },
+        "siteSettings": {
+            "title": "إعدادات الموقع",
+            "basicInfo": {
+                "title": "المعلومات الأساسية",
+                "arabicContent": "المحتوى بالعربية",
+                "englishContent": "المحتوى بالإنجليزية",
+                "siteNameAR": "اسم الموقع بالعربية",
+                "siteNameEN": "اسم الموقع بالإنجليزية",
+                "siteTitleAR": "عنوان الموقع بالعربية (SEO)",
+                "siteTitleEN": "عنوان الموقع بالإنجليزية (SEO)",
+                "siteDescriptionAR": "وصف الموقع بالعربية",
+                "siteDescriptionEN": "وصف الموقع بالإنجليزية",
+                "placeholders": {
+                    "nameAR": "موقعى",
+                    "nameEN": "My Awesome Website",
+                    "titleAR": "أفضل الخدمات في مصر",
+                    "titleEN": "Best Services in Egypt",
+                    "descriptionAR": "وصف قصير لمحركات البحث",
+                    "descriptionEN": "Short description for search engines"
+                }
+            },
+            "branding": {
+                "title": "الهوية والمظهر",
+                "logo": "اللوجو",
+                "favicon": "أيقونة المتصفح",
+                "ogImage": "صورة المعاينة (OG)",
+                "colors": {
+                    "primary": "الأساسي",
+                    "secondary": "الثانوي",
+                    "accent": "التمييز",
+                    "background": "الخلفية",
+                    "text": "لون النص",
+                    "muted": "اللون الباهت",
+                    "card": "لون البطاقات",
+                    "border": "لون الحدود",
+                    "reset": "إعادة ضبط الألوان"
+                },
+                "ui": {
+                    "radius": "انحناء الزوايا",
+                    "theme": "الثيم الافتراضي",
+                    "arabicFont": "الخط للغة العربية",
+                    "englishFont": "الخط للغة الإنجليزية"
+                }
+            },
+            "contact": {
+                "title": "معلومات الاتصال",
+                "email": "البريد الإلكتروني",
+                "phone": "رقم الهاتف",
+                "whatsapp": "رقم الواتساب",
+                "addressAR": "العنوان باللغة العربية",
+                "addressEN": "العنوان باللغة بالإنجليزية"
+            },
+            "socialSeo": {
+                "socialTitle": "وسائل التواصل الاجتماعي",
+                "seoTitle": "إعدادات SEO",
+                "domain": "رابط الدومين",
+                "keywordsSEO": "الكلمات المفتاحية",
+                "keywordsAR": "الكلمات المفتاحية (SEO) باللغة العربية",
+                "keywordsEN": "الكلمات المفتاحية (SEO) باللغة الإنجليزية"
+            },
+            "actions": {
+                "save": "حفظ التغييرات",
+                "saving": "جاري الحفظ...",
+                "uploading": "جاري الرفع",
+                "unsaved": "لديك تغييرات غير محفوظة",
+                "unsavedHint": "تأكد من حفظ التعديلات قبل الخروج",
+                "upToDate": "جميع الإعدادات محدثة",
+                "maxSizeNote": "أقصى حجم للملف: 2 ميجابايت (JPG، PNG، WebP)",
+                "uploadImage": "رفع ",
+                "changeImage": "تغيير ",
+                "removeImage": "حذف "
+            },
+            "helperText": {
+                "domain": "رابط الموقع الأساسي، يُفضّل إدخال رابط كامل صحيح.",
+                "keywords": "تُستخدم في تحسين محركات البحث، يُفضّل كلمات مفصولة بفواصل."
+            }
+        }
+    },
+    "errors": {
+        "SERVER_ERROR": "حدث خطأ غير متوقع، يرجى المحاولة لاحقًا.",
+        "INVALID_TYPE": "نوع الصفحة المحدد غير صحيح.",
+        "NOT_FOUND": "المورد المطلوب غير موجود.",
+        "ERROR_LOADING": "فشل تحميل البيانات، حاول مرة أخرى.",
+        "UNAUTHORIZED": "غير مصرح لك بالوصول، يرجى تسجيل الدخول.",
+        "SESSION_EXPIRED": "انتهت الجلسة، يرجى تسجيل الدخول مجددًا.",
+        "INVALID_CREDENTIALS": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+        "ACCOUNT_DISABLED": "تم تعطيل حسابك، يرجى التواصل مع الدعم.",
+        "EMAIL_NOT_VERIFIED": "يرجى تأكيد البريد الإلكتروني أولاً.",
+        "COOLDOWN_ACTIVE": "يرجى الانتظار قبل طلب بريد آخر.",
+        "INVALID_TOKEN": "الرمز غير صالح أو منتهي.",
+        "USER_ALREADY_EXISTS": "المستخدم موجود بالفعل.",
+        "USER_NOT_FOUND": "المستخدم غير موجود.",
+        "PROFILE_NOT_FOUND": "بيانات الملف الشخصي غير موجودة.",
+        "NOT_ALLOWED_IN_DEMO": "هذا الإجراء غير مسموح به في حساب العرض التجريبي",
+        "INVALID_PASSWORD_FORMAT": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+        "PASSWORD_LOWERCASE": "يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل",
+        "PASSWORD_UPPERCASE": "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل",
+        "PASSWORD_NUMBER": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل",
+        "PASSWORD_SPECIAL": "يجب أن تحتوي كلمة المرور على رمز خاص واحد على الأقل",
+        "INVALID_CURRENT_PASSWORD": "كلمة المرور الحالية غير صحيحة",
+        "SAME_PASSWORD": "يجب أن تكون كلمة المرور الجديدة مختلفة",
+        "SAME_PASSWORD_ERROR": "لا يمكن أن تكون كلمة المرور الجديدة مثل القديمة",
+        "Passwords_Not_Match": "كلمتا المرور غير متطابقتين",
+        "INVALID_INPUT": "البيانات المدخلة غير صحيحة.",
+        "INPUT_Required": "هذا الحقل مطلوب.",
+        "INVALID_EMAIL_FORMAT": "صيغة البريد الإلكتروني غير صحيحة.",
+        "INVALID_URL": "صيغة الرابط غير صحيحة.",
+        "INVALID_DOMAIN": "يجب أن يكون الرابط من الدومين الصحيح.",
+        "INVALID_COLOR": "لون hex غير صالح.",
+        "INVALID_PHONE": "رقم الهاتف غير صحيح.",
+        "FIELD_TOO_SHORT": "القيمة قصيرة جدًا.",
+        "FIELD_TOO_LONG": "القيمة أطول من الحد المسموح.",
+        "WIDGET_LOAD_ERROR": "فشل تحميل أداة الرفع.",
+        "UPLOAD_FAILED": "فشل رفع الملف.",
+        "SIGNATURE_ERROR": "فشل التحقق الأمني.",
+        "FILE_TOO_LARGE": "حجم الملف كبير جدًا.",
+        "INVALID_FILE_TYPE": "نوع الملف غير مسموح.",
+        "TOO_MANY_REQUESTS": "محاولات كثيرة جدًا. حاول مرة أخرى لاحقًا."
+    },
+    "success": {
+        "SETTINGS_UPDATED": "تم حفظ الإعدادات بنجاح",
+        "LOGIN_SUCCESS": "مرحبًا بعودتك",
+        "PASSWORD_CHANGED": "تم تغيير كلمة المرور بنجاح",
+        "UPLOAD_COMPLETE": "تم رفع الملف بنجاح",
+        "PROFILE_UPDATED": "تم تحديث الملف الشخصي",
+        "EMAIL_SENT": "تم إرسال البريد الإلكتروني",
+        "ACCOUNT_CREATED": "تم إنشاء الحساب بنجاح",
+        "IMAGE_REMOVED": "تم حذف الصورة",
+        "DATA_SAVED": "تم حفظ البيانات بنجاح"
+    }
+}

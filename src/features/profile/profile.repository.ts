@@ -1,46 +1,74 @@
 import prisma from "@/lib/prisma";
-import * as profileTypes from "./profile.types";
+import {
+  CreateProfileInput,
+  UpdateProfileInput,
+  Profile,
+} from "./profile.types";
+import { Prisma } from "@/generated/prisma/client";
 
+function toPrismaJson(
+  value: unknown,
+): Prisma.InputJsonValue | Prisma.NullableJsonNullValueInput | undefined {
+  if (value === null) return Prisma.JsonNull;
+  if (value === undefined) return undefined;
+
+  return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+}
 
 /**
  * Create profile for user
  */
 export async function createProfile(
-    data: profileTypes.CreateProfileInput
-): Promise<profileTypes.Profile> {
-    return prisma.profile.create({
-        data,
-    });
+  data: CreateProfileInput,
+): Promise<Profile> {
+  const result = await prisma.profile.create({
+    data: {
+      ...data,
+      image: toPrismaJson(data.image),
+    },
+  });
+
+  return {
+    ...result,
+    image: result.image as Profile["image"],
+  };
 }
 
 /**
  * Get profile by user id
  */
 export async function getProfileByUserId(
-    userId: string
-): Promise<profileTypes.Profile | null> {
-    return prisma.profile.findUnique({
-      where: { userId },
-      include: {
-        user: {
-          select: {
-            email: true,
-            isActive: true,
-          },
-        },
-      },
-    }) as Promise<profileTypes.Profile | null>;
+  userId: string,
+): Promise<Profile | null> {
+  const result = await prisma.profile.findUnique({
+    where: { userId },
+  });
+
+  if (!result) return null;
+
+  return {
+    ...result,
+    image: result.image as Profile["image"],
+  };
 }
 
 /**
  * Update profile
  */
 export async function updateProfile(
-    userId: string,
-    data: profileTypes.UpdateProfileInput
-): Promise<profileTypes.Profile> {
-    return prisma.profile.update({
-        where: { userId },
-        data,
-    });
+  userId: string,
+  data: UpdateProfileInput,
+): Promise<Profile> {
+  const result = await prisma.profile.update({
+    where: { userId },
+    data: {
+      ...data,
+      image: toPrismaJson(data.image),
+    },
+  });
+
+  return {
+    ...result,
+    image: result.image as Profile["image"],
+  };
 }

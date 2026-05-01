@@ -13,31 +13,130 @@ datasource db {
   provider = "postgresql"
 }
 
+enum RadiusOption {
+  sharp
+  medium
+  rounded
+  pill
+}
+
+enum ThemeMode {
+  light
+  dark
+  system
+}
+
+enum ArabicFont {
+  cairo
+  tajawal
+  alexandria
+  noto_kufi
+  ibm_plex_arabic
+}
+
+enum EnglishFont {
+  inter
+  geist
+  poppins
+  roboto
+  dm_sans
+}
+
 enum Role {
   USER
+  EDITOR
   ADMIN
 }
 
-model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  password      String
-  name          String?
-  role          Role      @default(USER)
-  emailVerified DateTime?
-  isActive      Boolean  @default(true)
+model SiteSetting {
+  id String @id @default(cuid())
+
+  siteNameAr String
+  siteNameEn String
+
+  siteTitleAr String?
+  siteTitleEn String?
+
+  siteDescriptionAr String? @db.Text
+  siteDescriptionEn String? @db.Text
+
+  addressAr String? @db.Text
+  addressEn String? @db.Text
+
+  defaultKeywordsAr String? @db.Text
+  defaultKeywordsEn String? @db.Text
+
+  arabicFont  ArabicFont  @default(cairo)
+  englishFont EnglishFont @default(inter)
+
+  logoUrl    Json?
+  faviconUrl Json?
+  ogImageUrl Json?
+
+  primaryColor    String?
+  secondaryColor  String?
+  accentColor     String?
+  mutedColor      String?
+  backgroundColor String?
+  foregroundColor String?
+  cardColor       String?
+  borderColor     String?
+
+  radius RadiusOption @default(medium)
+
+  defaultTheme ThemeMode @default(system)
+
+  contactEmail   String?
+  contactPhone   String?
+  whatsappNumber String?
+
+  facebookUrl  String?
+  twitterUrl   String?
+  instagramUrl String?
+  linkedinUrl  String?
+  youtubeUrl   String?
+
+  domainUrl String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  sessionVersion       Int      @default(1)
-  passwordChangedAt    DateTime?
+  @@map("site_settings")
+}
 
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  password          String
+  name              String
+  role              Role      @default(USER)
+  emailVerified     DateTime?
+  isActive          Boolean   @default(true)
+  sessionVersion    Int       @default(1)
+  passwordChangedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile                 Profile?
   accounts                Account[]
   sessions                Session[]
   passwordResetTokens     PasswordResetToken[]
-  profile                 Profile?
   emailVerificationTokens EmailVerificationToken[]
+}
+
+model Profile {
+  id      String  @id @default(cuid())
+  userId  String  @unique
+  name    String
+  phone   String?
+  address String?
+  image   Json?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Account {
@@ -70,18 +169,9 @@ model Session {
   @@map("sessions")
 }
 
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
-
-  @@unique([identifier, token])
-  @@map("verification_tokens")
-}
-
 model PasswordResetToken {
   id        String   @id @default(cuid())
-  token     String   @unique// hashed token
+  token     String
   userId    String
   expiresAt DateTime
   createdAt DateTime @default(now())
@@ -89,31 +179,27 @@ model PasswordResetToken {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
-}
-
-model Profile {
-  id     String @id @default(cuid())
-  userId String @unique
-
-  name    String?
-  phone   String?
-  address String?
-  image   String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model EmailVerificationToken {
   id        String   @id @default(cuid())
   userId    String
-  token     String  @unique
+  token     String
   expiresAt DateTime
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model Media {
+  id           String   @id @default(cuid())
+  publicId     String   @unique
+  resourceType String
+  format       String?
+  url          String
+  createdAt    DateTime @default(now())
+
+  @@index([publicId])
 }

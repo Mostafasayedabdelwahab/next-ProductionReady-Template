@@ -17,3 +17,18 @@ cloudinary.config({
 });
 
 export default cloudinary;
+
+export async function deleteImageFromCloudinary(
+  publicId: string,
+  resourceType: "image" | "video" = "image",
+) {
+  try {
+    const result = await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
+    });
+    return result;
+  } catch (error) {
+    console.error("Cloudinary Delete Error:", error);
+    throw new Error("Failed to delete old image");
+  }
+}

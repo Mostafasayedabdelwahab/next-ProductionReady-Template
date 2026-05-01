@@ -1,131 +1,143 @@
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import {
+  createUser,
+  findUserByEmail,
+  createPasswordResetToken,
+  deletePasswordResetToken,
+  updateUserPassword,
+  getValidResetTokens,
+  getUserById,
+  createEmailVerificationToken,
+  deleteEmailVerificationToken,
+  markUserEmailVerified,
+  findLastEmailVerificationToken,
+  findLastPasswordResetToken,
+  getUserWithPassword,
+} from "./user.repository";
+import {
+  registerApiSchema,
+  loginSchema,
+  resetPasswordApiSchema,
+} from "./user.schema";
+import { sendEmailVerificationEmail, sendResetPasswordEmail } from "@/services/mail";
+import { ERROR_CODES } from "@/config/errors";
 
-import { ERROR_CODES } from "@/lib/constants/errors";
-import * as userRepo from "./user.repository";
-import * as userSchema from "./user.schema";
-import { SafeUser } from "./user.types";
-import { sendEmailVerificationEmail, sendResetPasswordEmail } from "@/lib/mail";
+export async function registerUser(input: unknown) {
+  const data = registerApiSchema.parse(input);
 
-/**
- * Hash token using sha256
- */
-function hashToken(token: string): string {
-  return crypto.createHash("sha256").update(token).digest("hex");
-}
-
-/**
- * Register new user
- */
-export async function registerUser(input: unknown): Promise<SafeUser> {
-  // Validate input
-  const data = userSchema.registerApiSchema.parse(input);
   const { email, password, name } = data;
 
   const existingUser = await findUserByEmail(email);
-  if (existingUser) throw new Error(ERROR_CODES.USER_ALREADY_EXISTS);
+  if (existingUser) {
+    throw new Error(ERROR_CODES.USER_ALREADY_EXISTS);
+  }
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await userRepo.createUser({
+  const user = await createUser({
     email,
     name,
     password: hashedPassword,
   });
 
-  // Send verification email
   await sendEmailVerification(user.id);
 
-  // Remove password before returning
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password: _, ...safeUser } = user;
-
   return safeUser;
 }
 
-/**
- * Login user
- */
-export async function loginUser(input: unknown): Promise<SafeUser> {
-  // Validate input
-  const data = userSchema.loginSchema.parse(input);
+export async function loginUser(input: unknown) {
+  const data = loginSchema.parse(input);
+
   const { email, password } = data;
 
   const user = await findUserByEmail(email);
-  if (!user) throw new Error(ERROR_CODES.INVALID_CREDENTIALS);
 
-  if (user.emailVerified == null) {
-    throw new Error(ERROR_CODES.EMAIL_NOT_VERIFIED);
+  if (!user) {
+    throw new Error(ERROR_CODES.INVALID_CREDENTIALS);
+  }
+
+  if (!user.emailVerified) {
+    return {
+      ...user,
+      emailVerified: null,
+    };
   }
 
   const isValid = await bcrypt.compare(password, user.password);
-  if (!isValid) throw new Error(ERROR_CODES.INVALID_CREDENTIALS);
 
-  // Remove password before returning
+  if (!isValid) {
+    throw new Error(ERROR_CODES.INVALID_CREDENTIALS);
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password: _, ...safeUser } = user;
 
   return safeUser;
 }
 
-/**
- * Forgot password flow
- */
 export async function forgotPassword(email: string) {
   const normalizedEmail = email.toLowerCase().trim();
   const user = await findUserByEmail(normalizedEmail);
 
-  // Security: do not reveal existence
   if (!user) return;
 
-  // Cooldown check (60s)
-  const lastToken = await userRepo.findLastPasswordResetToken(user.id);
+  const lastToken = await findLastPasswordResetToken(user.id);
 
   if (lastToken) {
     const diff = Date.now() - lastToken.createdAt.getTime();
+
     if (diff < 60 * 1000) {
       throw new Error(ERROR_CODES.COOLDOWN_ACTIVE);
     }
   }
 
-  // Generate raw token
+  // 3️⃣ Generate raw token
   const rawToken = crypto.randomBytes(32).toString("hex");
 
-  // Hash token before saving
-  const hashedToken = hashToken(rawToken);
+  const hashedToken = await bcrypt.hash(rawToken, 10);
 
-  await userRepo.createPasswordResetToken({
+  // 5️⃣ Save token
+  await createPasswordResetToken({
     userId: user.id,
     token: hashedToken,
-    expiresAt: new Date(Date.now() + 1000 * 60 * 10), // 10 minutes
+    expiresAt: new Date(Date.now() + 1000 * 60 * 10),
   });
 
+  // 6️⃣  Create reset link
   const resetLink = `${process.env.APP_URL}/reset-password?token=${rawToken}`;
 
+  // 7️⃣  Send email
   await sendResetPasswordEmail(user.email, resetLink);
 }
 
-/**
- * Reset password
- */
 export async function resetPassword(input: unknown) {
-  const { token, password } = userSchema.resetPasswordApiSchema.parse(input);
+  const { token, password } = resetPasswordApiSchema.parse(input);
 
-  const hashedToken = hashToken(token);
+  const resetTokens = await getValidResetTokens();
 
-  const matchedToken = await userRepo.findPasswordResetTokenByHash(hashedToken);
+  let matchedToken = null;
 
-  if (!matchedToken || matchedToken.expiresAt < new Date()) {
+  for (const t of resetTokens) {
+    const isValid = await bcrypt.compare(token, t.token);
+    if (isValid) {
+      matchedToken = t;
+      break;
+    }
+  }
+
+  if (!matchedToken) {
     throw new Error(ERROR_CODES.INVALID_TOKEN);
   }
 
-  const user = await userRepo.getUserById(matchedToken.userId);
+  const user = await getUserWithPassword(matchedToken.userId);
 
   if (!user || !user.password) {
     throw new Error(ERROR_CODES.USER_NOT_FOUND);
   }
 
-  // Prevent using the same password
   const isSamePassword = await bcrypt.compare(password, user.password);
 
   if (isSamePassword) {
@@ -134,82 +146,74 @@ export async function resetPassword(input: unknown) {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  await userRepo.updateUserPassword(matchedToken.userId, hashedPassword);
+  await updateUserPassword(matchedToken.userId, hashedPassword);
 
-  await userRepo.deletePasswordResetToken(matchedToken.id);
+  await deletePasswordResetToken(matchedToken.id);
 }
 
-/**
- * Send email verification
- */
 export async function sendEmailVerification(userId: string) {
-  const user = await userRepo.getUserById(userId);
+  const user = await getUserById(userId);
   if (!user) return;
   if (user.emailVerified) return;
 
-  // Cooldown check (5 minutes)
-  const lastToken = await userRepo.findLastEmailVerificationToken(user.id);
+  // 🔒 Cooldown check (5 minutes)
+  const lastToken = await findLastEmailVerificationToken(user.id);
 
   if (lastToken) {
     const diff = Date.now() - lastToken.createdAt.getTime();
+
     if (diff < 1000 * 60 * 5) {
       throw new Error(ERROR_CODES.COOLDOWN_ACTIVE);
     }
   }
 
-  const rawToken = crypto.randomBytes(32).toString("hex");
-  const hashedToken = hashToken(rawToken);
+  // 1️⃣ Raw token
+  const rawCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-  await userRepo.deleteEmailVerificationToken(user.id);
+  // 2️⃣ Hash token
+  const hashedCode = await bcrypt.hash(rawCode, 10);
 
-  await userRepo.createEmailVerificationToken({
+  await deleteEmailVerificationToken(user.id);
+
+  // 3️⃣ Save token
+  await createEmailVerificationToken({
     userId: user.id,
-    token: hashedToken,
-    expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 24h
+    token: hashedCode,
+    expiresAt: new Date(Date.now() + 1000 * 60 * 10),
   });
 
-  const link = `${process.env.APP_URL}/verify-email?token=${rawToken}`;
-
-  await sendEmailVerificationEmail(user.email, link);
+  // 5️⃣ Send mail
+  await sendEmailVerificationEmail(user.email, rawCode);
 }
 
-/**
- * Verify email
- */
-export async function verifyEmail(token: string) {
-  const hashedToken = hashToken(token);
+export async function verifyEmail(userId: string, code: string) {
+  const token = await findLastEmailVerificationToken(userId);
 
-  const matched = await userRepo.findEmailVerificationTokenByHash(hashedToken);
-
-  if (!matched || matched.expiresAt < new Date()) {
+  if (!token || token.expiresAt < new Date()) {
     throw new Error(ERROR_CODES.INVALID_TOKEN);
   }
 
-  await userRepo.markUserEmailVerified(matched.userId);
-  await userRepo.deleteEmailVerificationToken(matched.id);
+  const isValid = await bcrypt.compare(code, token.token);
+
+  if (!isValid) {
+    await deleteEmailVerificationToken(userId);
+
+    throw new Error(ERROR_CODES.INVALID_TOKEN);
+  }
+
+  const user = await markUserEmailVerified(userId);
+  await deleteEmailVerificationToken(userId);
+  return user;
 }
 
-/**
- * Resend verification email
- */
 export async function resendVerificationEmail(email: string) {
   const normalizedEmail = email.toLowerCase().trim();
 
   const user = await findUserByEmail(normalizedEmail);
 
-  // Security: do not reveal existence
   if (!user) return;
+
   if (user.emailVerified) return;
 
-  await userRepo.deleteEmailVerificationToken(user.id);
   await sendEmailVerification(user.id);
-}
-
-/**
- * Find user by email (normalized)
- */
-export async function findUserByEmail(email: string) {
-  if (!email) return null;
-
-  return userRepo.findUniqueByEmail(email.toLowerCase());
 }

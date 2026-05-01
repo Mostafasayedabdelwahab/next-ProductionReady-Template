@@ -1,0 +1,245 @@
+{
+    "navigation": {
+        "home": "Home",
+        "about": "About Us",
+        "services": "Our Services",
+        "projects": "Projects",
+        "blog": "Blog",
+        "faqs": "FAQs",
+        "contact": "Contact Us",
+        "privacy": "Privacy Policy",
+        "terms": "Terms and Conditions"
+    },
+    "footer": {
+        "quickLinks": "Quick Links",
+        "overview": "Overview",
+        "followUs": "Follow Us",
+        "whatsapp": "WhatsApp Chat",
+        "copyRight": "All Rights Reserved"
+    },
+    "auth": {
+        "login": {
+            "title": "Welcome back!",
+            "description": "You are one step away from an exceptional experience",
+            "emailLabel": "Email Address",
+            "passwordLabel": "Password",
+            "submit": "Sign In",
+            "submitting": "Signing in...",
+            "forgotPassword": "Forgot password?",
+            "noAccount": "Don't have an account?",
+            "registerLink": "Create account"
+        },
+        "register": {
+            "title": "Create Account",
+            "description": "Fill in your details to get started",
+            "nameLabel": "Full Name",
+            "emailLabel": "Email Address",
+            "passwordLabel": "Password",
+            "confirmPasswordLabel": "Confirm Password",
+            "submit": "Sign Up",
+            "submitting": "Creating account...",
+            "haveAccount": "Already have an account?",
+            "loginLink": "Sign in"
+        },
+        "password": {
+            "current": "Current Password",
+            "new": "New Password",
+            "confirm": "Confirm New Password",
+            "update": "Update Password",
+            "updating": "Updating..."
+        },
+        "forgotPassword": {
+            "title": "Forgot Password",
+            "description": "Enter your email to receive reset link",
+            "emailLabel": "Email Address",
+            "submit": "Send Reset Link",
+            "submitting": "Sending..."
+        },
+        "resetPassword": {
+            "title": "Reset Password",
+            "description": "Enter your new password",
+            "passwordLabel": "New Password",
+            "confirmPasswordLabel": "Confirm Password",
+            "submit": "Reset Password",
+            "submitting": "Resetting..."
+        },
+        "verifyEmail": {
+            "title": "Verify Your Email",
+            "description": "A verification code has been sent to your email. Please enter it below to verify your account.",
+            "codeLabel": "Verification Code",
+            "submit": "Verify Email",
+            "submitting": "Verifying...",
+            "resend": "Resend Code",
+            "resending": "Resending..."
+        },  
+        "logout": {
+            "label": "Sign Out",
+            "loading": "Signing out..."
+        },
+        "placeholders": {
+            "email": "Enter your email",
+            "password": "Enter your password",
+            "name": "Enter your full name"
+        }
+    },
+    "profile": {
+        "title": "User Profile",
+        "phone": "Phone Number",
+        "address": "Address",
+        "placeholders": {
+            "name": "Enter your full name",
+            "phone": "01xxxxxxxxx",
+            "address": "City, Street, Building"
+        }
+    },
+    "unauthorized": {
+        "title": "Unauthorized",
+        "description": "You do not have permission to access this page.",
+        "goBack": "Go back to Home"
+    },
+    "public": {
+        "security": {
+            "title": "Security",
+            "description": "Manage your password and session"
+        }
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "sidebar": {
+            "menu": "Main Menu",
+            "overview": "Overview",
+            "sitePages": "Site Pages",
+            "users": "User Management",
+            "settings": "Site Settings"
+        },
+        "siteSettings": {
+            "title": "Site Settings",
+            "basicInfo": {
+                "title": "Basic Information",
+                "arabicContent": "Arabic Content",
+                "englishContent": "English Content",
+                "siteNameAR": "Site Name (Arabic)",
+                "siteNameEN": "Site Name (English)",
+                "siteTitleAR": "Site Title (Arabic) (SEO)",
+                "siteTitleEN": "Site Title (English) (SEO)",
+                "siteDescriptionAR": "Site Description (Arabic)",
+                "siteDescriptionEN": "Site Description (English)",
+                "placeholders": {
+                    "nameAR": "موقعى",
+                    "nameEN": "My Awesome Website",
+                    "titleAR": "أفضل الخدمات في مصر",
+                    "titleEN": "Best Services in Egypt",
+                    "descriptionAR": "وصف قصير لمحركات البحث",
+                    "descriptionEN": "Short description for search engines"
+                }
+            },
+            "branding": {
+                "title": "Branding & Appearance",
+                "logo": "Logo",
+                "favicon": "Favicon",
+                "ogImage": "Social Preview (OG Image)",
+                "colors": {
+                    "primary": "Primary",
+                    "secondary": "Secondary",
+                    "accent": "Accent",
+                    "background": "Background",
+                    "text": "Text Color",
+                    "muted": "Muted Color",
+                    "card": "Card Color",
+                    "border": "Border Color",
+                    "reset": "Reset to Default colors"
+                },
+                "ui": {
+                    "radius": "Corner Radius",
+                    "theme": "Default Theme",
+                    "arabicFont": "Arabic Font",
+                    "englishFont": "English Font"
+                }
+            },
+            "contact": {
+                "title": "Contact Information",
+                "email": "Email Address",
+                "phone": "Phone Number",
+                "whatsapp": "WhatsApp Number",
+                "addressAR": "Address (Arabic)",
+                "addressEN": "Address (English)"
+            },
+            "socialSeo": {
+                "socialTitle": "Social Media",
+                "seoTitle": "SEO Settings",
+                "domain": "Domain URL",
+                "keywordsSEO": "SEO Keywords",
+                "keywordsAR": "SEO Keywords (Arabic)",
+                "keywordsEN": "SEO Keywords (English)"
+            },
+            "actions": {
+                "save": "Save Changes",
+                "saving": "Saving...",
+                "uploading": "Uploading...",
+                "unsaved": "You have unsaved changes",
+                "unsavedHint": "Make sure to save changes before leaving",
+                "upToDate": "All settings are up to date",
+                "maxSizeNote": "Max size: 2MB (JPG, PNG, WebP)",
+                "uploadImage": "Upload",
+                "changeImage": "Change",
+                "removeImage": "Remove"
+            },
+            "helperText": {
+                "domain": "The main website URL, preferably a valid full link.",
+                "keywords": "Used for SEO, preferably comma-separated keywords."
+            }
+        }
+    },
+    "errors": {
+        "SERVER_ERROR": "An unexpected error occurred. Please try again later.",
+        "INVALID_TYPE": "The selected page type is invalid.",
+        "NOT_FOUND": "The requested resource could not be found.",
+        "ERROR_LOADING": "Failed to load data. Please try again.",
+        "UNAUTHORIZED": "You are not authorized. Please log in again.",
+        "SESSION_EXPIRED": "Your session has expired. Please log in again.",
+        "INVALID_CREDENTIALS": "Invalid email or password.",
+        "ACCOUNT_DISABLED": "Your account has been disabled. Please contact support.",
+        "EMAIL_NOT_VERIFIED": "Please verify your email address.",
+        "COOLDOWN_ACTIVE": "Please wait before requesting another email.",
+        "INVALID_TOKEN": "Invalid or expired code.",
+        "USER_ALREADY_EXISTS": "User already exists.",
+        "USER_NOT_FOUND": "User not found.",
+        "PROFILE_NOT_FOUND": "Profile data not found.",
+        "NOT_ALLOWED_IN_DEMO": "This action is disabled for demo account",
+        "INVALID_PASSWORD_FORMAT": "Password must be at least 8 characters",
+        "PASSWORD_LOWERCASE": "Password must contain at least one lowercase letter",
+        "PASSWORD_UPPERCASE": "Password must contain at least one uppercase letter",
+        "PASSWORD_NUMBER": "Password must contain at least one number",
+        "PASSWORD_SPECIAL": "Password must contain at least one special character",
+        "INVALID_CURRENT_PASSWORD": "Current password is incorrect",
+        "SAME_PASSWORD": "New password must be different",
+        "SAME_PASSWORD_ERROR": "New password cannot be the same as the current password",
+        "Passwords_Not_Match": "Passwords do not match",
+        "INVALID_INPUT": "Invalid information provided.",
+        "INPUT_Required": "This field is required",
+        "INVALID_EMAIL_FORMAT": "Invalid email format.",
+        "INVALID_URL": "Invalid URL format. Please enter a valid link.",
+        "INVALID_DOMAIN": "URL must be from the correct domain.",
+        "INVALID_COLOR": "Invalid hex color.",
+        "INVALID_PHONE": "Invalid phone number.",
+        "FIELD_TOO_SHORT": "Input is too short.",
+        "FIELD_TOO_LONG": "Input is too long.",
+        "WIDGET_LOAD_ERROR": "Upload widget failed to load.",
+        "UPLOAD_FAILED": "Failed to upload file.",
+        "SIGNATURE_ERROR": "Authentication failed.",
+        "FILE_TOO_LARGE": "File size is too large.",
+        "INVALID_FILE_TYPE": "Invalid file type.",
+        "TOO_MANY_REQUESTS": "Too many attempts. Please try again later."
+    },
+    "success": {
+        "SETTINGS_UPDATED": "Settings have been saved successfully.",
+        "LOGIN_SUCCESS": "Welcome back! Redirecting...",
+        "PASSWORD_CHANGED": "Your password has been updated.",
+        "UPLOAD_COMPLETE": "File uploaded successfully.",
+        "PROFILE_UPDATED": "Profile updated successfully.",
+        "EMAIL_SENT": "Email sent successfully.",
+        "ACCOUNT_CREATED": "Account created successfully.",
+        "IMAGE_REMOVED": "file removed successfully.",
+        "DATA_SAVED": "Data saved successfully."
+    }
+}

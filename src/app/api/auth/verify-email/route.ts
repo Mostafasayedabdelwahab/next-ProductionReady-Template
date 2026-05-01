@@ -1,37 +1,60 @@
 import { verifyEmail } from "@/features/user/user.service";
-import { handleApiError } from "@/lib/utils/api-helper";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { encode } from "next-auth/jwt";
 
 export async function POST(req: Request) {
   try {
-    // Parse request body
-    const body = await req.json();
-    const { token } = body;
+    const session = await getServerSession(authOptions);
 
-    // Validate token existence
-    if (!token) {
+    if (!session?.user?.id) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const { code } = await req.json();
+
+    if (!code) {
       return NextResponse.json(
-        {
-          success: false,
-          code: "INVALID_TOKEN",
-          message: "Verification token is required",
-        },
+        { message: "Code is required" },
         { status: 400 },
       );
     }
 
-    // Call service (handles hashing and validation)
-    await verifyEmail(token);
+    // ✅ verify
+    const user = await verifyEmail(session.user.id, code);
 
-    // Success response
-    return NextResponse.json(
-      {
-        success: true,
+    // 🔥 generate new token
+    const token = await encode({
+      token: {
+        id: user.id,
+        role: user.role,
+        sessionVersion: user.sessionVersion,
+        passwordChangedAt: user.passwordChangedAt,
+        emailVerified: user.emailVerified,
       },
-      { status: 200 },
-    );
+      secret: process.env.NEXTAUTH_SECRET!,
+    });
+
+    const res = NextResponse.json({
+      success: true,
+    });
+
+    // 🔥 set updated cookie
+    res.cookies.set("next-auth.session-token", token, {
+      httpOnly: true,
+      path: "/",
+    });
+
+    return res;
   } catch (error) {
-    // Centralized error handling
-    return handleApiError(error);
+    if (error instanceof Error) {
+      return NextResponse.json({ message: error.message }, { status: 400 });
+    }
+
+    return NextResponse.json(
+      { message: "Something went wrong" },
+      { status: 500 },
+    );
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 
@@ -10,19 +10,12 @@ interface UserMenuProps {
         name?: string | null;
         email?: string | null;
     };
+    image?: string | null;
 }
 
-export default function UserMenu({ user }: UserMenuProps) {
+export default function UserMenu({ user, image }: UserMenuProps) {
     const [open, setOpen] = useState(false);
-    const [image, setImage] = useState<string | null>(null);
-
-    useEffect(() => {
-        fetch("/api/profile")
-            .then((res) => res.json())
-            .then((data) => setImage(data.image))
-            .catch(() => { });
-    }, []);
-
+    const avatar = image;
     const initial =
         user.name?.charAt(0).toUpperCase() || "U";
 
@@ -30,9 +23,9 @@ export default function UserMenu({ user }: UserMenuProps) {
         <div className="relative">
             <button
                 onClick={() => setOpen(!open)}
-                className="h-9 w-9 overflow-hidden rounded-full bg-gray-200"
+                className="relative h-9 w-9 overflow-hidden rounded-full bg-gray-200"
             >
-                {image ? (
+                {avatar ? (
 
                     <Image
                         src={image}

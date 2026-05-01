@@ -1,9 +1,10 @@
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 import { loginUser } from "@/features/user/user.service";
-import { Environments } from "@/lib/constants/enums";
+import { Environments } from "@/config/enums";
+import { Role } from "@/generated/prisma/enums";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -17,15 +18,11 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: user.id as string },
-          select: { role: true, sessionVersion: true, passwordChangedAt: true },
-        });
-
         token.id = user.id;
-        token.role = dbUser?.role;
-        token.sessionVersion = dbUser?.sessionVersion;
-        token.passwordChangedAt = dbUser?.passwordChangedAt;
+        token.role = user.role;
+        token.sessionVersion = user.sessionVersion;
+        token.passwordChangedAt = user.passwordChangedAt;
+        token.emailVerified = user.emailVerified;
       }
 
       return token;
@@ -33,9 +30,10 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.role = token.role as string;
+        session.user.role = token.role as Role;
         session.user.sessionVersion = token.sessionVersion as number;
         session.user.passwordChangedAt = token.passwordChangedAt as Date;
+        session.user.emailVerified = token.emailVerified as Date | null;
       }
 
       return session;
@@ -57,7 +55,6 @@ export const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials) {
-
         if (!credentials?.email || !credentials.password) {
           throw new Error("Missing credentials");
         }
@@ -71,6 +68,10 @@ export const authOptions: NextAuthOptions = {
           id: String(user.id),
           email: user.email,
           name: user.name,
+          role: user.role,
+          sessionVersion: user.sessionVersion,
+          passwordChangedAt: user.passwordChangedAt,
+          emailVerified: user.emailVerified,
         };
       },
     }),

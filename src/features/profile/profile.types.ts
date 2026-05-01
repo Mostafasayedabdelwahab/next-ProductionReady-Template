@@ -1,43 +1,27 @@
 import { z } from "zod";
-import * as profileSchema from "./profile.schema";
+import {
+  changePasswordSchema,
+  createProfileSchema,
+  updateProfileSchema,
+} from "./profile.schema";
+import { Media } from "@/types/upload.type";
 
-/**
- * Profile input types inferred from Zod schemas
- */
-export type CreateProfileInput = z.infer<
-  typeof profileSchema.createProfileSchema
->;
-export type UpdateProfileInput = z.infer<
-  typeof profileSchema.updateProfileSchema
->;
-export type ChangePasswordInput = z.infer<
-  typeof profileSchema.changePasswordSchema
->;
+export type CreateProfileInput = z.infer<typeof createProfileSchema>;
 
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 /**
  * Profile entity returned from database
  */
 export type Profile = {
   id: string;
   userId: string;
-  name: string | null;
+
+  name: string;
   phone: string | null;
   address: string | null;
-  image: string | null;
+  image: Media | null;
+
   createdAt: Date;
   updatedAt: Date;
-
-  // Optional relation for convenience in UI
-  user?: {
-    email: string;
-    isActive: boolean;
-  };
 };
-
-/**
- * Unified action response shape (must match user.types)
- */
-
-export type ActionResponse<T = void> =
-  | { success: true; data?: T; message?: string }
-  | { success: false; error: string };

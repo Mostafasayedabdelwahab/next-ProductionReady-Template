@@ -1,77 +1,91 @@
 import bcrypt from "bcryptjs";
-import { ERROR_CODES } from "@/lib/constants/errors";
-import * as userRepo from "../user/user.repository";
-import * as profileRepo from "./profile.repository";
-import * as profileTypes from "./profile.types";
-import * as profileSchema from "./profile.schema";
+
+import {
+  getUserNameById,
+  updateUserPassword,
+  getUserWithPassword,
+} from "../user/user.repository";
+import {
+  createProfile,
+  getProfileByUserId,
+  updateProfile,
+} from "./profile.repository";
+
+import {
+  createProfileSchema,
+  updateProfileSchema,
+  changePasswordSchema,
+} from "./profile.schema";
+
+import type {
+  CreateProfileInput,
+  UpdateProfileInput,
+  Profile,
+} from "./profile.types";
+import { ERROR_CODES } from "@/config/errors";
 
 /**
- * Get existing profile or create a new one
+ * Get profile for logged-in user
+ * If profile does not exist, create one
  */
-export async function getOrCreateProfile(
-  userId: string,
-): Promise<profileTypes.Profile> {
-  const existingProfile = await profileRepo.getProfileByUserId(userId);
+export async function getOrCreateProfile(userId: string): Promise<Profile> {
+  const existingProfile = await getProfileByUserId(userId);
 
   if (existingProfile) {
     return existingProfile;
   }
 
-  const name = await userRepo.getUserNameById(userId);
+  const name = await getUserNameById(userId);
 
-  const data: profileTypes.CreateProfileInput =
-    profileSchema.createProfileSchema.parse({
-      userId,
-      name: name ?? undefined,
-    });
+  // Create empty profile on first access
+  const data: CreateProfileInput = createProfileSchema.parse({
+    userId,
+    name: name ?? undefined,
+  });
 
-  return profileRepo.createProfile(data);
+  return createProfile(data);
 }
 
 /**
- * Update user profile data
+ * Update profile for logged-in user
  */
 export async function updateUserProfile(
   userId: string,
   input: unknown,
-): Promise<profileTypes.Profile> {
-  const data = profileSchema.updateProfileSchema.parse(input);
-  return profileRepo.updateProfile(userId, data);
+): Promise<Profile> {
+  // Validate input (runtime safety)
+  const data: UpdateProfileInput = updateProfileSchema.parse(input);
+
+  return updateProfile(userId, data);
 }
 
-/**
- * Change user password
- */
-export async function changeUserPassword(
-  userId: string,
-  input: unknown,
-): Promise<void> {
-  // Validate input
-  const data = profileSchema.changePasswordSchema.parse(input);
+export async function changeUserPassword(userId: string, input: unknown) {
+  const data = changePasswordSchema.parse(input);
 
-  // Get user
-  const user = await userRepo.getUserById(userId);
+  const user = await getUserWithPassword(userId);
 
   if (!user || !user.password) {
     throw new Error(ERROR_CODES.NOT_FOUND);
   }
 
-  // Verify current password
+  if (user.email === process.env.ADMIN_DEMO_EMAIL) {
+    throw new Error(ERROR_CODES.NOT_ALLOWED_IN_DEMO);
+  }
+
+
   const isValid = await bcrypt.compare(data.currentPassword, user.password);
 
   if (!isValid) {
     throw new Error(ERROR_CODES.INVALID_CURRENT_PASSWORD);
   }
 
-  // Prevent using the same password
   const isSamePassword = await bcrypt.compare(data.newPassword, user.password);
 
   if (isSamePassword) {
-    throw new Error(ERROR_CODES.SAME_PASSWORD_ERROR);
+    throw new Error(ERROR_CODES.SAME_PASSWORD);
   }
 
-  // Hash and update password
   const hashedPassword = await bcrypt.hash(data.newPassword, 10);
 
-  await userRepo.updateUserPassword(userId, hashedPassword);
+  await updateUserPassword(userId, hashedPassword);
 }
