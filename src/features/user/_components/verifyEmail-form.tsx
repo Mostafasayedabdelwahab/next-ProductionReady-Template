@@ -59,6 +59,10 @@ export default function VerifyEmailForm() {
 
             showSuccess(dict.success.ACCOUNT_CREATED);
 
+            // 🔥 forced session refresh
+            await fetch("/api/auth/session", {
+                cache: "no-store",
+            });
             router.replace(`/${locale}/profile`);
             router.refresh();
 
