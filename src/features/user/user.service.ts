@@ -107,7 +107,7 @@ export async function forgotPassword(email: string) {
   });
 
   // 6️⃣  Create reset link
-  const resetLink = `${process.env.APP_URL}/reset-password?token=${rawToken}`;
+  const resetLink = `${process.env.NEXTAUTH_URL}/reset-password?token=${rawToken}`;
 
   // 7️⃣  Send email
   await sendResetPasswordEmail(user.email, resetLink);
