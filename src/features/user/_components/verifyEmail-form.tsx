@@ -59,12 +59,9 @@ export default function VerifyEmailForm() {
 
             showSuccess(dict.success.ACCOUNT_CREATED);
 
-            setTimeout(() => {
-                window.location.reload();
-                router.push(`/${locale}/profile`);
-            }, 1000);
+            router.replace(`/${locale}/profile`);
+            router.refresh();
 
-            
         } catch {
             showError(getErrorMessage(ERROR_CODES.SERVER_ERROR, dict));
         } finally {
