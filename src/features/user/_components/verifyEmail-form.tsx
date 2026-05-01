@@ -60,8 +60,8 @@ export default function VerifyEmailForm() {
             showSuccess(dict.success.ACCOUNT_CREATED);
 
             setTimeout(() => {
-                router.replace(`/${locale}/profile`);
                 window.location.reload();
+                router.replace(`/${locale}/profile`);
             }, 200);
 
         } catch {
