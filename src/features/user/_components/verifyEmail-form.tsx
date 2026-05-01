@@ -61,9 +61,10 @@ export default function VerifyEmailForm() {
 
             setTimeout(() => {
                 window.location.reload();
-                router.replace(`/${locale}/profile`);
-            }, 200);
+                router.push(`/${locale}/profile`);
+            }, 1000);
 
+            
         } catch {
             showError(getErrorMessage(ERROR_CODES.SERVER_ERROR, dict));
         } finally {
