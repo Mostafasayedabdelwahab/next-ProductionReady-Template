@@ -1,5 +1,3 @@
-"use client";
-
 import type { SiteSettingsEntity } from "@/features/site-settings";
 import { Mail, Phone, ArrowUpRight, Globe, MessageCircleMore } from "lucide-react";
 import SocialLinks from "../shared/social-links";
@@ -8,29 +6,34 @@ import Link from "next/link";
 import { getLocalizedValue } from "@/i18n/localization-helper";
 import Container from "./container";
 import { cn } from "@/utils/utils";
-import { useTranslation } from "@/i18n/translation-provider";
 import type { NavItem } from "./public-navigation";
 import { getMediaUrl } from "@/utils/media";
+import { getDictionary } from "@/i18n/get-dictionary";
+import { Languages } from "@/config/enums";
 
 
 type Props = {
     settings: SiteSettingsEntity;
     navigation: NavItem[];
+    locale: string;
 };
 
 const FooterLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
     <li>
         <Link
+            prefetch={false}
             href={href}
-            className="group flex items-center gap-1 text-muted-foreground hover:text-primary transition-all duration-300 w-fit"
+            className="group flex items-center gap-1 text-foreground hover:text-primary transition-all duration-300 w-fit"
         >
             <span>{children}</span>
             <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all" />
         </Link>
     </li>
 );
-export default function Footer({ settings, navigation }: Props) {
-    const { dict, locale } = useTranslation();
+
+export default async function Footer({ settings, navigation, locale }: Props) {
+    const dict = await getDictionary(locale as Languages);
+
     const nav = dict.navigation;
     const footerUi = dict.footer;
 
@@ -59,7 +62,7 @@ export default function Footer({ settings, navigation }: Props) {
                                 settings.logoUrl ? "h-12 w-12" : "h-11 w-11 rounded-2xl bg-primary shadow-lg shadow-primary/20 flex shrink-0"
                             )}>
                                 {settings.logoUrl ? (
-                                    <Image src={getMediaUrl(settings.logoUrl) || "./glope.svg"} alt={siteName} width={48} height={48} className="object-contain" />
+                                    <Image src={getMediaUrl(settings.logoUrl) || "./glope.svg"} alt={`${siteName} logo`} width={48} height={48} className="object-contain" />
                                 ) : (
                                     <span className="text-lg font-bold text-primary-foreground">{firstLetter}</span>
                                 )}
@@ -68,7 +71,7 @@ export default function Footer({ settings, navigation }: Props) {
                         </Link>
 
                         {siteDescription && (
-                            <p className="text-muted-foreground leading-relaxed max-w-sm text-[15px] line-clamp-3 italic opacity-90">
+                            <p className="text-foreground leading-relaxed max-w-sm text-[15px] line-clamp-3 italic opacity-90">
                                 {siteDescription}
                             </p>
                         )}
@@ -114,7 +117,7 @@ export default function Footer({ settings, navigation }: Props) {
                                         <Mail className="w-4 h-4" />
                                     </div>
                                     <div className="flex flex-col min-w-0">
-                                        <span className="text-[10px] uppercase font-bold text-muted-foreground/60 tracking-wider">Email</span>
+                                        <span className="text-[10px] uppercase font-bold text-foreground/60 tracking-wider">Email</span>
                                         <span className="text-sm truncate font-medium">{settings.contactEmail}</span>
                                     </div>
                                 </a>
@@ -126,7 +129,7 @@ export default function Footer({ settings, navigation }: Props) {
                                         <Phone className="w-4 h-4" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] uppercase font-bold text-blue-600/60 tracking-wider">Call</span>
+                                        <span className="text-[10px] uppercase font-bold text-blue-500 tracking-wider">Call</span>
                                         <span className="text-sm font-medium">{settings.contactPhone}</span>
                                     </div>
                                 </a>
@@ -138,7 +141,7 @@ export default function Footer({ settings, navigation }: Props) {
                                         <MessageCircleMore className="w-4 h-4" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] uppercase font-bold text-green-600/60 tracking-wider">WhatsApp</span>
+                                        <span className="text-[10px] uppercase font-bold text-green-500 tracking-wider">WhatsApp</span>
                                         <span className="text-sm font-medium">{footerUi.whatsapp}</span>
                                     </div>
                                 </a>

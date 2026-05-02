@@ -10,11 +10,7 @@ import { getCachedSiteSettings } from "@/loaders/site-settings.loader";
 import { createPageMetadata } from "@/lib/page-metadata";
 import { Metadata } from "next";
 
-export async function generateMetadata({
-    params,
-}: {
-    params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params, }: { params: Promise<{ locale: string }>; }): Promise<Metadata> {
     const { locale } = await params;
 
     const [dict, settings] = await Promise.all([

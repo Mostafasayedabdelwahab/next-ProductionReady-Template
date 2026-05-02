@@ -28,6 +28,7 @@ export default function HeaderClient({ navigation }: Props) {
 
                 return (
                     <Link
+                        prefetch={false}
                         key={item.href}
                         href={item.href}
                         onMouseEnter={() => setHoveredPath(item.href)}

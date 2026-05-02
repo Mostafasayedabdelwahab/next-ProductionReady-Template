@@ -170,7 +170,7 @@ export default async function PublicLayout({ children, params }: { children: Rea
         </Container>
       </main>
 
-      <Footer settings={settings as SiteSettingsEntity} navigation={navigation} />
+      <Footer settings={settings as SiteSettingsEntity} navigation={navigation} locale={locale} />
     </>
   );
 }

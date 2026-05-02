@@ -94,6 +94,7 @@ export default function MobileSidebar({
                         return (
                             <SheetClose asChild key={item.href}>
                                 <Link
+                                    prefetch={false}
                                     href={item.href}
                                     className={cn(
                                         "group relative flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] font-medium transition-all duration-200",

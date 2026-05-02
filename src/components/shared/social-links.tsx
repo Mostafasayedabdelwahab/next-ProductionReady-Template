@@ -27,6 +27,7 @@ export default function SocialLinks({ settings }: SocialLinksProps) {
                         style={{
                             "--brand-color": item.color
                         } as React.CSSProperties}
+                        aria-label={`Visit our ${item.icon.title} page`}
                     >
                         <svg
                             role="img"
@@ -42,6 +43,7 @@ export default function SocialLinks({ settings }: SocialLinksProps) {
 
             {settings.linkedinUrl && (
                 <a
+                    
                     href={settings.linkedinUrl}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -49,6 +51,7 @@ export default function SocialLinks({ settings }: SocialLinksProps) {
                     style={{
                         "--brand-color": `#0A66C2`
                     } as React.CSSProperties}
+                    aria-label="LinkedIn"
                 >
                     <svg
                         role="img"

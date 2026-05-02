@@ -41,6 +41,7 @@ export default function LanguageSwitcher() {
             size="sm"
             onClick={toggleLanguage}
             className="flex items-center gap-2 hover:bg-primary/10 transition-colors"
+            aria-label="language switcher"
         >
             <Languages className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium">

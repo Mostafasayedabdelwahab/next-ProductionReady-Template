@@ -40,6 +40,7 @@ export default async function Header({
                 <Link
                     href={`/${locale}`}
                     className="flex items-center gap-3 hover:opacity-90 transition-opacity group"
+                    aria-label="Logo and Home Link"
                 >
                     <div
                         className={cn(
