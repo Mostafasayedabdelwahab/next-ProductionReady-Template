@@ -1,80 +1,82 @@
 "use client";
-import Image from "next/image";
 
-import {useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { useTranslation } from "@/i18n/translation-provider";
+import { Role } from "@/generated/prisma/enums";
 
 interface UserMenuProps {
     user: {
         name?: string | null;
         email?: string | null;
+        role?: Role;
     };
     image?: string | null;
 }
 
 export default function UserMenu({ user, image }: UserMenuProps) {
-    const [open, setOpen] = useState(false);
-    const avatar = image;
-    const initial =
-        user.name?.charAt(0).toUpperCase() || "U";
+
+    const { dict, locale } = useTranslation();
+
+    const initial = user.name?.charAt(0).toUpperCase() || "U";
 
     return (
-        <div className="relative">
-            <button
-                onClick={() => setOpen(!open)}
-                className="relative h-9 w-9 overflow-hidden rounded-full bg-gray-200"
-            >
-                {avatar ? (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <button className="relative h-9 w-9 overflow-hidden rounded-full bg-gray-200">
+                    {image ? (
+                        <Image
+                            src={image}
+                            alt="Avatar"
+                            fill
+                            className="object-cover"
+                        />
+                    ) : (
+                        <div className="flex h-full w-full items-center justify-center font-semibold text-gray-600">
+                            {initial}
+                        </div>
+                    )}
+                </button>
+            </DropdownMenuTrigger>
 
-                    <Image
-                        src={image}
-                        alt="Avatar"
-                        fill
-                        className="h-full rounded-full w-full object-cover"
-                    />
-                ) : (
-                    <div className="flex h-full w-full items-center justify-center font-semibold text-gray-600">
-                        {initial}
-                    </div>
-                )}
-            </button>
-
-            {open && (
-                <div className="absolute right-0 mt-2 w-56 rounded-xl border bg-white shadow-lg">
-                    <div className="border-b px-4 py-3">
-                        <p className="text-sm font-medium">
-                            {user.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                            {user.email}
-                        </p>
-                    </div>
-
-                    <Link
-                        href="/profile"
-                        className="block px-4 py-2 text-sm hover:bg-gray-100"
-                    >
-                        Profile
-                    </Link>
-
-                    <Link
-                        href="/dashboard"
-                        className="block px-4 py-2 text-sm hover:bg-gray-100"
-                    >
-                        Dashboard
-                    </Link>
-
-                    <button
-                        onClick={() =>
-                            signOut({ callbackUrl: "/login" })
-                        }
-                        className="w-full border-t px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
-                    >
-                        Logout
-                    </button>
+            <DropdownMenuContent
+                align="end" className="w-80">
+                <div className="px-4 py-3 border-b">
+                    <p className="text-sm font-medium">{user.name}</p>
+                    <p className="text-xs text-muted-foreground">{user.email}</p>
                 </div>
-            )}
-        </div>
+                <div dir={locale === "ar" ? "rtl" : "ltr"}>
+                <DropdownMenuItem asChild>
+                    <Link href={`/${locale}/profile`}>{dict.profile.title}</Link>
+                </DropdownMenuItem>
+
+                    {(user.role === "ADMIN" || user.role === "EDITOR") && (
+                        <DropdownMenuItem asChild>
+                            <Link href={`/${locale}/dashboard`}>
+                                {dict.dashboard.title}
+                            </Link>
+                        </DropdownMenuItem>
+                    )}
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem
+                    onClick={() => signOut({ callbackUrl: "/login" })}
+                    className="text-red-600"
+                >
+                    {dict.auth.logout.label}
+                </DropdownMenuItem>
+                </div>
+            </DropdownMenuContent>
+        </DropdownMenu>
     );
 }

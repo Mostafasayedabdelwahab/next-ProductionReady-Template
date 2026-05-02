@@ -5,9 +5,8 @@ declare module "next-auth" {
     user: {
       id: string;
       role: string;
+      image?: string | null;
       sessionVersion: number;
-      passwordChangedAt: Date | null;
-      emailVerified: Date | null;
     } & DefaultSession["user"];
   }
 
@@ -16,6 +15,7 @@ declare module "next-auth" {
     sessionVersion: number;
     passwordChangedAt: Date | null;
     emailVerified: Date | null;
+    isActive: boolean;
   }
 }
 

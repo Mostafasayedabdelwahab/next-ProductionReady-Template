@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -18,53 +17,31 @@ export default function HeaderClient({ navigation }: Props) {
     const [hoveredPath, setHoveredPath] = useState<string | null>(null);
 
     return (
-        <nav
-            className="hidden md:flex items-center gap-2 text-sm font-medium relative"
-            onMouseLeave={() => setHoveredPath(null)}
-        >
+        <nav className="hidden md:flex items-center gap-1 relative" onMouseLeave={() => setHoveredPath(null)}>
             {navigation.map((item) => {
                 const isActive = pathname === item.href;
-                const isHovered = hoveredPath === item.href;
-
                 return (
                     <Link
-                        prefetch={false}
                         key={item.href}
                         href={item.href}
                         onMouseEnter={() => setHoveredPath(item.href)}
                         className={cn(
-                            "relative px-4 py-2 transition-colors duration-300 rounded-md",
-                            isActive
-                                ? "text-primary"
-                                : "text-muted-foreground hover:text-primary"
+                            "relative px-4 py-2 text-sm font-medium transition-colors rounded-full text-nowrap",
+                            isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
                         )}
                     >
-                        {isHovered && (
+                        {hoveredPath === item.href && (
                             <motion.span
-                                layoutId="hover-bg"
-                                className="absolute inset-0 bg-muted rounded-lg -z-10"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
+                                layoutId="nav-hover"
+                                className="absolute inset-0 bg-muted rounded-full -z-10"
+                                transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
                             />
                         )}
-
-                        <span className="relative z-10">{item.title}</span>
-
-                        {(isActive || isHovered) && (
-                            <motion.div
-                                layoutId="active-nav-line"
-                                className={cn(
-                                    "absolute bottom-0 left-0 right-0 h-0.5 bg-primary mx-4",
-                                    !isActive && "bg-primary/40"
-                                )}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{
-                                    type: "spring",
-                                    stiffness: 380,
-                                    damping: 30,
-                                }}
+                        {item.title}
+                        {isActive && (
+                            <motion.span
+                                layoutId="nav-underline"
+                                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"
                             />
                         )}
                     </Link>

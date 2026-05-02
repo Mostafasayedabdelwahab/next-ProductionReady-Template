@@ -93,6 +93,9 @@ export async function proxy(req: NextRequest) {
   const isPublic = publicRoutes.some(
     (route) => cleanPath === route || cleanPath.startsWith(`${route}/`),
   );
+  if (token && token.isActive === false) {
+    return NextResponse.redirect(buildUrl(req, `/${locale}/login`));
+  }
 
   // Force email verification
   if (token && !token.emailVerified) {

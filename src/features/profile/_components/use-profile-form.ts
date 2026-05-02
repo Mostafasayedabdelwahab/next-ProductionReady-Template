@@ -18,12 +18,14 @@ import { signOut } from "next-auth/react";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { getErrorMessage } from "@/config/errors";
 import { getSuccessMessage, SUCCESS_CODES } from "@/config/success";
+import { useRouter } from "next/navigation";
 
 export function useProfileForm(
   defaultValues: UpdateProfileInput,
   dict: Awaited<ReturnType<typeof getDictionary>>,
 ) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const form = useForm<UpdateProfileInput>({
     resolver: zodResolver(updateProfileSchema),
@@ -34,6 +36,7 @@ export function useProfileForm(
       image: defaultValues?.image ?? null,
     },
   });
+
 
   const onSubmit = (values: UpdateProfileInput) => {
     startTransition(async () => {
@@ -48,6 +51,7 @@ export function useProfileForm(
       if (result.success) {
         showSuccess(getSuccessMessage(SUCCESS_CODES.PROFILE_UPDATED, dict));
         form.reset(values);
+        router.refresh();
       } else {
         showError(getErrorMessage(result.code || "SERVER_ERROR", dict));
       }

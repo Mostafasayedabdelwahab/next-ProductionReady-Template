@@ -83,7 +83,7 @@
         }
     },
     "profile": {
-        "title": "User Profile",
+        "title": "Profile",
         "phone": "Phone Number",
         "address": "Address",
         "placeholders": {

@@ -49,7 +49,7 @@ export default async function Footer({ settings, navigation, locale }: Props) {
     const overviewLinks = visiblePages.slice(mid);
 
     return (
-        <footer className="relative border-t bg-card/30 overflow-hidden mt-5">
+        <footer className="relative border-t bg-card overflow-hidden mt-5">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-primary/50 to-transparent" />
 
             <Container>
@@ -112,7 +112,7 @@ export default async function Footer({ settings, navigation, locale }: Props) {
                         <h4 className="font-bold text-foreground text-sm uppercase tracking-[0.2em]">{nav.contact}</h4>
                         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
                             {settings.contactEmail && (
-                                <a href={`mailto:${settings.contactEmail}`} className="flex items-center gap-4 p-3.5 rounded-2xl bg-muted/40 hover:bg-muted border border-transparent hover:border-primary/10 transition-all group">
+                                <a href={`mailto:${settings.contactEmail}`} className="flex items-center gap-4 p-3.5 rounded-2xl bg-primary/5 hover:bg-primary/10 border border-primary/5 transition-all group">
                                     <div className="p-2.5 rounded-xl bg-background text-primary shadow-sm group-hover:scale-110 transition-transform">
                                         <Mail className="w-4 h-4" />
                                     </div>
@@ -124,12 +124,12 @@ export default async function Footer({ settings, navigation, locale }: Props) {
                             )}
 
                             {settings.contactPhone && (
-                                <a href={`tel:${settings.contactPhone}`} className="flex items-center gap-4 p-3.5 rounded-2xl bg-muted/40 hover:bg-muted border border-transparent hover:border-blue-500/10 transition-all group">
+                                <a href={`tel:${settings.contactPhone}`} className="flex items-center gap-4 p-3.5 rounded-2xl bg-primary/5 hover:bg-primary/10 border border-primary/5 transition-all group">
                                     <div className="p-2.5 rounded-xl bg-background text-blue-500 shadow-sm group-hover:scale-110 transition-transform">
                                         <Phone className="w-4 h-4" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] uppercase font-bold text-blue-500 tracking-wider">Call</span>
+                                        <span className="text-[10px] uppercase font-bold text-blue-900 tracking-wider">Call</span>
                                         <span className="text-sm font-medium">{settings.contactPhone}</span>
                                     </div>
                                 </a>
@@ -141,7 +141,7 @@ export default async function Footer({ settings, navigation, locale }: Props) {
                                         <MessageCircleMore className="w-4 h-4" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] uppercase font-bold text-green-500 tracking-wider">WhatsApp</span>
+                                        <span className="text-[10px] uppercase font-bold text-green-800 tracking-wider">WhatsApp</span>
                                         <span className="text-sm font-medium">{footerUi.whatsapp}</span>
                                     </div>
                                 </a>

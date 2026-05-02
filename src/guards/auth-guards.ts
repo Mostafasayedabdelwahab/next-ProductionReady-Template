@@ -1,7 +1,10 @@
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-import { Role, User } from "@/generated/prisma/client";
+import { Role } from "@/generated/prisma/client";
+import { redirect } from "next/navigation";
+import { getLocale } from "@/i18n/get-locale";
+import { cookies } from "next/headers";
 
 const ROLE_PRIORITY = {
   ADMIN: 3,
@@ -9,59 +12,51 @@ const ROLE_PRIORITY = {
   USER: 1,
 };
 
-export async function requireAuthUser(): Promise<User> {
+async function logoutServer() {
+  const c = await cookies();
+  c.delete("next-auth.session-token");
+  c.delete("__Secure-next-auth.session-token");
+  c.delete("next-auth.csrf-token");
+}
+
+export async function requireAuthUser() {
+  const locale = await getLocale();
   const session = await getServerSession(authOptions);
 
-  // Check if session exists and contains user ID
   if (!session?.user?.id) {
-    throw new Error("UNAUTHORIZED");
+    redirect(`/${locale}/login`);
   }
 
-  // Fetch the latest user data from the database
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
   });
 
-  // Security checks
-  if (!user) throw new Error("UNAUTHORIZED");
-  if (!user.isActive) throw new Error("ACCOUNT_DISABLED");
-
-  // Validate Session Version (Security: forces logout if version mismatch)
-  if (user.sessionVersion !== session.user.sessionVersion) {
-    throw new Error("SESSION_EXPIRED");
+  if (!user || !user.isActive) {
+    await logoutServer();
+    redirect(`/${locale}/login`);
   }
 
-  // Validate Password Change Timestamp (Security: invalidates old tokens after password change)
-  if (
-    user.passwordChangedAt &&
-    session.user.passwordChangedAt &&
-    new Date(user.passwordChangedAt) > new Date(session.user.passwordChangedAt)
-  ) {
-    throw new Error("PASSWORD_CHANGED");
-  }
-
-  return user;
+  return { user, locale };
 }
 
-export async function requireUser(): Promise<User> {
-  const user = await requireAuthUser();
+export async function requireUser() {
+  const { user, locale } = await requireAuthUser();
 
   if (!user.emailVerified) {
-    throw new Error("EMAIL_NOT_VERIFIED");
+    redirect(`/${locale}/verify-email`);
   }
 
   return user;
 }
 
-async function requireRole(minRole: Role): Promise<User> {
-  const user = await requireUser();
+async function requireRole(minRole: Role) {
+  const { user, locale } = await requireAuthUser();
 
   if (
-    ROLE_PRIORITY[user.role] === undefined ||
     ROLE_PRIORITY[minRole] === undefined ||
     ROLE_PRIORITY[user.role] < ROLE_PRIORITY[minRole]
   ) {
-    throw new Error("FORBIDDEN");
+    redirect(`/${locale}/unauthorized`);
   }
 
   return user;

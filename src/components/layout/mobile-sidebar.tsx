@@ -54,13 +54,13 @@ export default function MobileSidebar({
                 showCloseButton={false}
             >
                 {/* 1. Header Area with Glassmorphism */}
-                <div className="p-4 border-b bg-linear-to-b from-primary/5 to-transparent">
-                    <div className="flex items-center justify-between mb-2">
-                        <SheetTitle className="text-left font-bold text-xl tracking-tight">
+                <div className=" p-2 border-b bg-linear-to-b from-primary/5 to-transparent">
+                    <div className="flex items-center justify-between gap-2">
+                        <SheetTitle className="text-left font-bold text-xl tracking-tight w-full">
                             {/* Logo Section */}
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center justify-between gap-3">
                                 {settings.logoUrl ? (
-                                    <div className="relative h-10 w-10 overflow-hidden rounded-xl border bg-background p-1 shadow-sm">
+                                    <div className="relative h-15 w-15 overflow-hidden">
                                         <Image
                                             src={getMediaUrl(settings.logoUrl) || "./glope.svg"}
                                             alt={siteName}
@@ -73,9 +73,13 @@ export default function MobileSidebar({
                                         {siteName?.charAt(0).toUpperCase()}
                                     </div>
                                 )}
-                                <span className="bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/70">
-                                    {siteName}
-                                </span>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-1">
+                                        <LanguageSwitcher />
+                                    </div>
+                                    <div className="h-4 w-px bg-border" />
+                                    <ThemeToggle />
+                                </div>
                             </div>
                         </SheetTitle>
 
@@ -125,14 +129,6 @@ export default function MobileSidebar({
 
                 {/* 3. Bottom Utility Area */}
                 <div className="p-2 mt-auto border-t bg-muted/30">
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-background border shadow-sm">
-                        <div className="flex items-center gap-1">
-                            <LanguageSwitcher />
-                        </div>
-                        <div className="h-4 w-px bg-border" />
-                        <ThemeToggle />
-                    </div>
-
                     <p className="mt-4 text-[10px] text-center text-muted-foreground uppercase tracking-widest font-semibold">
                         © 2026 {siteName}
                     </p>

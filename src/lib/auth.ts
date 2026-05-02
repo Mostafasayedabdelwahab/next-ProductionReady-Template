@@ -20,29 +20,65 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.picture = user.image;
         token.sessionVersion = user.sessionVersion;
         token.passwordChangedAt = user.passwordChangedAt;
         token.emailVerified = user.emailVerified;
+        token.isActive = user.isActive;
       }
 
+      // 🔥 validation on every request
       if (token?.id) {
-        const user = await prisma.user.findUnique({
+        const dbUser = await prisma.user.findUnique({
           where: { id: token.id },
-          select: { emailVerified: true },
+          select: {
+            sessionVersion: true,
+            passwordChangedAt: true,
+            emailVerified: true,
+            isActive: true,
+            profile: {
+              select: { image: true },
+            },
+          },
         });
 
-        token.emailVerified = user?.emailVerified ?? null;
+        if (!dbUser) {
+          throw new Error("UNAUTHORIZED");
+        }
+
+        // ✅ session invalidation
+        if (dbUser.sessionVersion !== token.sessionVersion) {
+          throw new Error("SESSION_EXPIRED");
+        }
+
+        // ✅ password change invalidation
+        if (
+          dbUser.passwordChangedAt &&
+          token.passwordChangedAt &&
+          new Date(dbUser.passwordChangedAt) > new Date(token.passwordChangedAt)
+        ) {
+          throw new Error("PASSWORD_CHANGED");
+        }
+
+        // update dynamic fields
+        token.emailVerified = dbUser.emailVerified ?? null;
+        token.picture = (dbUser.profile?.image as { url: string })?.url || null;
+        token.isActive = dbUser.isActive;
       }
 
       return token;
     },
+
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as Role;
-        session.user.sessionVersion = token.sessionVersion as number;
-        session.user.passwordChangedAt = token.passwordChangedAt as Date;
-        session.user.emailVerified = token.emailVerified as Date | null;
+        session.user = {
+          id: token.id as string,
+          name: token.name,
+          email: token.email,
+          role: token.role as Role,
+          image: (token.picture as string) || null,
+          sessionVersion: token.sessionVersion as number,
+        };
       }
 
       return session;
@@ -73,6 +109,10 @@ export const authOptions: NextAuthOptions = {
           password: credentials.password,
         });
 
+         if (!user.isActive) {
+           throw new Error("ACCOUNT_DISABLED");
+         }
+
         return {
           id: String(user.id),
           email: user.email,
@@ -81,6 +121,7 @@ export const authOptions: NextAuthOptions = {
           sessionVersion: user.sessionVersion,
           passwordChangedAt: user.passwordChangedAt,
           emailVerified: user.emailVerified,
+          isActive: user.isActive,
         };
       },
     }),

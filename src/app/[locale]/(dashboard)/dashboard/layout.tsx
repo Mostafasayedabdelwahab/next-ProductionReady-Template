@@ -1,7 +1,7 @@
 // app/(admin)/layout.tsx
 import type { Metadata } from "next";
 import { DashboardShell } from "@/features/dashboard/_components/dashboard-shell";
-import { requireUser } from "@/guards";
+import { requireEditor } from "@/guards";
 import { getMediaUrl } from "@/utils/media";
 import { getCachedSiteSettings } from "@/loaders/site-settings.loader";
 import { getLocalizedValue } from "@/i18n/localization-helper";
@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function DashboardLayout({ children, params }: { children: React.ReactNode; params: Promise<{ locale: string }> }) {
     // 1. Authentication & Active Status Check
     // This replaces manual redirect logic and ensures data integrity
-    const user = await requireUser();
+    const user = await requireEditor();
 
     const settings = await getCachedSiteSettings();
 

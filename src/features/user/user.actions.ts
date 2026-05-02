@@ -33,7 +33,7 @@ export async function registerAction(input: unknown) {
 export async function resendVerificationAction() {
   const user = await requireAuthUser();
 
-  await resendVerificationEmail(user.email);
+  await resendVerificationEmail(user.user.email);
   return {
     message: "If an account exists, a verification email has been sent.",
   };

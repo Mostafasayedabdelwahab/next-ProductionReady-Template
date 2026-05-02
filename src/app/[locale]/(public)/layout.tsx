@@ -59,11 +59,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       },
     },
     metadataBase: new URL(baseUrl),
-    themeColor: [
-      { media: "(prefers-color-scheme: light)", color: settings.primaryColor || "#ffffff" },
-      { media: "(prefers-color-scheme: dark)", color: "#0b0f19" },
-    ],
-    title: {
+      title: {
       default: siteTitle || brandName,
       template: `%s | ${brandName}`,
     },
