@@ -14,6 +14,7 @@ import type { Profile } from "@/features/profile/profile.types";
 import { ChangePasswordForm } from "./changePasswordForm";
 import { useTranslation } from "@/i18n/translation-provider";
 import LogoutButton from "@/features/user/_components/logout-button";
+import RHFPhoneInput from "@/components/form/rhf-phoneInput";
 
 interface Props {
     profile: Profile;
@@ -64,11 +65,10 @@ export function ProfileForm({ profile, email }: Props) {
                                     />
                                 </div>
 
-                                <RHFInput
+                                <RHFPhoneInput
                                     control={form.control}
                                     name="phone"
                                     label={dict.profile.phone}
-                                    placeholder={dict.profile.placeholders.phone}
                                 />
 
                                 <RHFInput

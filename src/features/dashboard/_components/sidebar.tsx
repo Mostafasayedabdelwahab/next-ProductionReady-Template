@@ -48,7 +48,7 @@ export function Sidebar({ settings }: SidebarProps) {
         <>
             {/* Logo Section */}
             <header className="flex h-14 items-center px-4 border-b shrink-0">
-                <Link href={`/${locale}/dashboard`} className="flex items-center gap-3 font-bold text-xl tracking-tight text-primary hover:opacity-90 transition-opacity">
+                <Link href={`/${locale}/`} className="flex items-center gap-3 font-bold text-xl tracking-tight text-primary hover:opacity-90 transition-opacity">
                     <div className={cn(
                         "h-9 w-9 rounded-xl flex items-center justify-center transition-all",
                         !settings.logoUrl ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20" : "bg-transparent"

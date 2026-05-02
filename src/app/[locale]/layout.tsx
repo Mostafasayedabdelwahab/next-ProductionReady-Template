@@ -65,7 +65,7 @@ export default async function RootLayout({ children, params }: { children: React
                     <TranslationProvider dict={dict} locale={locale}>
                         <NextTopLoader color="var(--primary-base)" showSpinner={false} height={3} />
                         <PageAnimatePresence >
-                            <Script src="https://widget.cloudinary.com/v2.0/global/all.js" strategy="afterInteractive" />
+                            <Script src="https://widget.cloudinary.com/v2.0/global/all.js" strategy="lazyOnload" />
                             {children}
                         </PageAnimatePresence>
                         <Toaster richColors position="top-center" closeButton />

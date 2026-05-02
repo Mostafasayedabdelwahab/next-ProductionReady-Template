@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { ERROR_CODES } from "@/config/errors";
+import { isValidPhoneNumber } from "libphonenumber-js/min";
 
 export const requireString = z
   .string()
@@ -39,14 +40,16 @@ export const socialUrl = (domains: string[]) =>
     .or(z.literal(""));
 
 // Phone
-export const phoneSchema = z
-  .string()
-  .trim()
-  .regex(/^01[0125][0-9]{8}$/, ERROR_CODES.INVALID_PHONE)
-  .optional()
-  .nullable()
-  .or(z.literal(""));
+export const phoneSchema = z.union([
+  z
+    .string()
+    .trim()
+    .refine((value) => isValidPhoneNumber(value), ERROR_CODES.INVALID_PHONE),
 
+  z.literal(""),
+  z.null(),
+  z.undefined(),
+]);
 // Keywords
 export const keywordsSchema = z
   .string()

@@ -88,7 +88,7 @@
         "address": "Address",
         "placeholders": {
             "name": "Enter your full name",
-            "phone": "01xxxxxxxxx",
+            "phone": "Phone number with country code",
             "address": "City, Street, Building"
         }
     },

@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 
 import { getCachedSiteSettings } from "@/loaders/site-settings.loader";
-import { getSiteSettingsService, type SiteSettingsEntity } from "@/features/site-settings";
+import { type SiteSettingsEntity } from "@/features/site-settings";
 
 import { getLocalizedValue } from "@/i18n/localization-helper";
 import Script from "next/script";
@@ -13,7 +13,7 @@ import Header from "@/components/layout/Header";
 import Container from "@/components/layout/container";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
-  const settings = await getSiteSettingsService();
+  const settings = await getCachedSiteSettings();
   const { locale } = await params;
 
   const localized = {
@@ -38,22 +38,27 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     siteDescription ||
     `${tagline}. Professional digital solutions tailored to grow your business.`;
 
-  const baseUrl = settings.domainUrl || "https://example.com";
+  const baseUrl = (settings.domainUrl || "https://example.com").replace(/\/+$/, "");
 
-  const ogImage = getMediaUrl(settings.ogImageUrl);
-
-  const safeOgImage =
-    ogImage && ogImage.trim() !== ""
-      ? ogImage
-      : `${baseUrl}/og.png`;
+  const ogImage = getMediaUrl(settings.ogImageUrl) || `/og.png`;
+  const iconImage = getMediaUrl(settings.faviconUrl) || `/glope.svg`;
 
   return {
     robots: {
       index: true,
       follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
     metadataBase: new URL(baseUrl),
-
+    themeColor: [
+      { media: "(prefers-color-scheme: light)", color: settings.primaryColor || "#ffffff" },
+      { media: "(prefers-color-scheme: dark)", color: "#0b0f19" },
+    ],
     title: {
       default: brandName,
       template: `%s | ${brandName}`,
@@ -65,24 +70,25 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       ?.split(",")
       .map((k) => k.trim())
       .filter(Boolean),
-
     icons: {
-      icon: getMediaUrl(settings.faviconUrl) ?? "/glope.svg",
+      icon: [{ url: iconImage }],
+      apple: [{ url: iconImage }],
     },
 
     openGraph: {
       type: "website",
-      url: `${baseUrl}/${locale}`,
+      url: new URL(`/${locale}`, baseUrl).toString(),
       locale: locale === "ar" ? "ar_AR" : "en_US",
       title: brandName,
       description,
       siteName: brandName,
       images: [
         {
-          url: safeOgImage,
+          url: ogImage,
           width: 1200,
           height: 630,
           alt: brandName,
+          type: "image/png",
         },
       ],
     },
@@ -91,7 +97,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       card: "summary_large_image",
       title: brandName,
       description,
-      images: [safeOgImage],
+      images: [ogImage],
     },
   };
 }
@@ -109,14 +115,14 @@ export default async function PublicLayout({ children, params }: { children: Rea
     siteName: getLocalizedValue(settings.siteNameAr, settings.siteNameEn, locale),
   }
 
-  const baseUrl = settings.domainUrl || "https://example.com"
+  const baseUrl = (settings.domainUrl || "https://example.com").replace(/\/+$/, "");
   return (
 
     <>
       <Script
         id="structured-data"
         type="application/ld+json"
-        strategy="afterInteractive"
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
@@ -124,7 +130,7 @@ export default async function PublicLayout({ children, params }: { children: Rea
               {
                 "@type": "Organization",
                 name: localized.siteName,
-                url: `${baseUrl}/${locale}`,
+                url: new URL(`/${locale}`, baseUrl).toString(),
                 logo: getMediaUrl(settings.logoUrl) || `${baseUrl}/glope.svg`,
               },
               {
@@ -132,10 +138,17 @@ export default async function PublicLayout({ children, params }: { children: Rea
                 name: localized.siteName,
                 url: baseUrl,
                 inLanguage: locale === "ar" ? "ar" : "en",
+                potentialAction: {
+                  "@type": "SearchAction",
+                  target: `${baseUrl}/search?q={search_term_string}`,
+                  "query-input": "required name=search_term_string",
+                },
+
               },
             ],
           }),
         }}
+
       />
 
       <Header locale={locale} />

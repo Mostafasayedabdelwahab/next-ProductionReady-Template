@@ -26,6 +26,7 @@ import { useTranslation } from "@/i18n/translation-provider";
 import { motion, Variants } from "framer-motion";
 import FormActions from "@/components/form/form-actions";
 import { DEFAULT_THEME } from "@/config/constants";
+import RHFPhoneInput from "@/components/form/rhf-phoneInput";
 type Props = {
     defaultValues: SiteSettingsFormValues | null;
 };
@@ -215,8 +216,8 @@ export default function SiteSettingsForm({ defaultValues }: Props) {
                                     <RHFInput control={form.control} name="contactEmail" label={dict.dashboard.siteSettings.contact.email} placeholder="support@example.com" />
                                 </div>
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                    <RHFInput control={form.control} name="contactPhone" label={dict.dashboard.siteSettings.contact.phone} placeholder="+201001234567" />
-                                    <RHFInput control={form.control} name="whatsappNumber" label={dict.dashboard.siteSettings.contact.whatsapp} placeholder="+201001234567" />
+                                    <RHFPhoneInput control={form.control} name="contactPhone" label={dict.dashboard.siteSettings.contact.phone} />
+                                    <RHFPhoneInput control={form.control} name="whatsappNumber" label={dict.dashboard.siteSettings.contact.whatsapp} />
                                 </div>
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                     <RHFInput control={form.control} name="addressAr" label={dict.dashboard.siteSettings.contact.addressAR} placeholder="القاهرة, مصر" />

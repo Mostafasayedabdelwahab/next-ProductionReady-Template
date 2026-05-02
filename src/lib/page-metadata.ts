@@ -5,20 +5,17 @@ export function createPageMetadata(
   locale: string,
   path: string = "",
 ): Metadata {
-  const canonical = `${baseUrl}/${locale}${path}`;
+  const Url = (baseUrl || "https://example.com").replace(/\/+$/, "");
+  const canonical = `${Url}/${locale}${path}`;
 
   return {
     alternates: {
       canonical,
       languages: {
-        "ar-SA": `${baseUrl}/ar${path}`,
-        "en-US": `${baseUrl}/en${path}`,
-        "x-default": `${baseUrl}/ar${path}`,
+        "ar-SA": `${Url}/ar${path}`,
+        "en-US": `${Url}/en${path}`,
+        "x-default": `${Url}/ar${path}`,
       },
-    },
-    openGraph: {
-      url: canonical,
-      locale: locale === "ar" ? "ar_AR" : "en_US",
     },
   };
 }
