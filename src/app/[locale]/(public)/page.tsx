@@ -55,13 +55,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   return (
     <div className="flex flex-col min-h-screen">
       {/* --- Hero Section --- */}
-      <section className="relative overflow-hidden bg-background py-20 lg:py-32">
+      <section aria-labelledby="hero-heading" className="relative overflow-hidden bg-background py-20 lg:py-32">
         <div className="container mx-auto px-4 text-center">
           <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm mb-6 bg-muted/50">
             <ShieldCheck className="w-4 h-4 mr-2 text-primary" />
             <span>{d_home.hero.badge}</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+          <h1 id="hero-heading" className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
             {d_home.hero.title}{" "}
             <span className="text-primary block mt-2">{d_home.hero.highlight}</span>
           </h1>
@@ -83,10 +83,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       </section>
 
       {/* --- Features Section --- */}
-      <section className="py-20 bg-muted/30">
+      <section aria-labelledby="features-heading" className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">{d_home.features.sectionTitle}</h2>
+            <h2 id="features-heading" className="text-3xl font-bold mb-4">{d_home.features.sectionTitle}</h2>
             <p className="text-muted-foreground">{d_home.features.sectionDescription}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -104,11 +104,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       </section>
 
       {/* --- CTA Section --- */}
-      <section className="py-20">
+      <section aria-labelledby="cta-heading"  className="py-20">
         <div className="container mx-auto px-4 text-center">
           <div className="bg-card rounded-3xl p-8 md:p-16 relative overflow-hidden">
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              <h2 id="cta-heading" className="text-3xl md:text-4xl font-bold mb-6">
                 {d_home.cta.title}
               </h2>
               <p className=" mb-10 max-w-xl mx-auto">

@@ -101,7 +101,7 @@ export default async function Footer({ settings, navigation, locale }: Props) {
                     <div className="lg:col-span-4 md:col-span-6 grid grid-cols-2 gap-8">
                         {/* Column 1: Quick Links */}
                         <div className="space-y-5">
-                            <h4 className="font-bold text-foreground text-sm uppercase tracking-[0.2em]">{footerUi.quickLinks}</h4>
+                            <div className="font-bold text-foreground text-sm uppercase tracking-[0.2em]">{footerUi.quickLinks}</div>
                             <ul className="space-y-3">
                                 {quickLinks.map((item) => (
                                     <FooterLink key={item.href} href={item.href} locale={locale}>
@@ -113,7 +113,7 @@ export default async function Footer({ settings, navigation, locale }: Props) {
 
                         {/* Column 2: Overview */}
                         <div className="space-y-5">
-                            <h4 className="font-bold text-foreground text-sm uppercase tracking-[0.2em]">{footerUi.overview}</h4>
+                            <div className="font-bold text-foreground text-sm uppercase tracking-[0.2em]">{footerUi.overview}</div>
                             <ul className="space-y-3">
                                 {overviewLinks.map((item) => (
                                     <FooterLink key={item.href} href={item.href} locale={locale}>
@@ -125,7 +125,7 @@ export default async function Footer({ settings, navigation, locale }: Props) {
                     </div>
 
                     <div className="lg:col-span-4 md:col-span-12 space-y-6">
-                        <h4 className="font-bold text-foreground text-sm uppercase tracking-[0.2em]">{nav.contact}</h4>
+                        <div className="font-bold text-foreground text-sm uppercase tracking-[0.2em]">{nav.contact}</div>
                         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
                             {settings.contactEmail && (
                                 <a href={`mailto:${settings.contactEmail}`} className="flex items-center gap-4 p-3.5 rounded-2xl bg-primary/5 hover:bg-primary/10 border border-primary/5 transition-all group">
