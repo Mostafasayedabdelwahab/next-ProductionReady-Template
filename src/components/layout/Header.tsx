@@ -42,8 +42,9 @@ export default async function Header({ locale }: { locale: string }) {
                                 <Image
                                     src={getMediaUrl(settings.logoUrl) || "./glope.svg"}
                                     alt={siteName}
-                                    fill
-                                    className="object-contain"
+                                    width={50}
+                                    height={50}
+                                    className="object-cover rounded-full"
                                 />
                             ) : (
                                 <span className="text-primary font-black text-xl">{siteName?.charAt(0)}</span>
@@ -53,7 +54,7 @@ export default async function Header({ locale }: { locale: string }) {
                 </div>
 
                 <div className="flex justify-end lg:justify-center items-center">
-                    <HeaderClient navigation={navigation} />
+                    <HeaderClient navigation={navigation} locale={locale} />
                 </div>
 
                 {/* 3. Right: Actions Section */}

@@ -29,6 +29,9 @@ export async function requireAuthUser() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
+    include: {
+      profile: true,
+    },
   });
 
   if (!user || !user.isActive) {
@@ -36,7 +39,13 @@ export async function requireAuthUser() {
     redirect(`/${locale}/login`);
   }
 
-  return { user, locale };
+ return {
+   user: {
+     ...user,
+     image: (user.profile?.image as { url: string })?.url || null,
+   },
+   locale,
+ };
 }
 
 export async function requireUser() {

@@ -94,34 +94,33 @@ export default function MobileSidebar({
                     {navigation.map((item) => {
                         const Icon = ICONS[item.icon as keyof typeof ICONS] || FileText;
                         const isActive = pathname === item.href;
-
+                        const normalize = (path: string) => path.replace(/\/$/, "")
+                        const isHome = normalize(item.href) === `/${locale}`;
                         return (
                             <SheetClose asChild key={item.href}>
-                                <Link
-                                    prefetch={false}
-                                    href={item.href}
-                                    className={cn(
-                                        "group relative flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] font-medium transition-all duration-200",
-                                        isActive
-                                            ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
-                                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                                    )}
-                                >
-                                    {Icon && (
-                                        <Icon
-                                            className={cn(
-                                                "w-5 h-5 transition-transform duration-200 group-hover:scale-110",
-                                                isActive
-                                                    ? "text-primary-foreground"
-                                                    : "text-muted-foreground/70 group-hover:text-primary"
-                                            )}
-                                        />
-                                    )}
-                                    <span className="flex-1">{item.title}</span>
-                                    {isActive && (
-                                        <div className="h-1.5 w-1.5 rounded-full bg-primary-foreground/50" />
-                                    )}
-                                </Link>
+                                {isHome ? (
+                                    <Link
+                                        href={item.href}
+                                        className={cn(
+                                            "group relative flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] font-medium transition-all duration-200",
+                                            isActive
+                                                ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                                                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                        )}
+                                    >
+                                        <Icon className="w-5 h-5" />
+                                        <span className="flex-1">{item.title}</span>
+                                    </Link>
+                                ) : ( 
+                                        <button
+                                            disabled={true}
+                                        type="button"
+                                            className="group relative flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] font-medium transition-all duration-200  text-muted-foreground opacity-60 w-full text-start cursor-not-allowed"
+                                    >
+                                        <Icon className="w-5 h-5" />
+                                        <span className="flex-1">{item.title}</span>
+                                    </button>
+                                )}
                             </SheetClose>
                         );
                     })}

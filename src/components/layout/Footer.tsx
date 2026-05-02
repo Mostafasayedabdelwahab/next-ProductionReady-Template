@@ -18,18 +18,34 @@ type Props = {
     locale: string;
 };
 
-const FooterLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
-    <li>
-        <Link
-            prefetch={false}
-            href={href}
-            className="group flex items-center gap-1 text-foreground hover:text-primary transition-all duration-300 w-fit"
-        >
-            <span>{children}</span>
-            <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all" />
-        </Link>
-    </li>
-);
+function FooterLink({ href, children, locale }: { href: string; children: React.ReactNode; locale: string }) {
+    const normalize = (path: string) => path.replace(/\/$/, "")
+    const isHome = normalize(href) === `/${locale}`;
+    return (
+        <li>
+            {isHome ? (
+                <Link
+                    href={href}
+                    className="group flex items-center gap-1 text-foreground hover:text-primary transition-all duration-300 w-fit"
+                >
+                    <span>{children}</span>
+                    <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all" />
+                </Link>
+            ) : (
+                <button disabled={true}
+                    type="button"
+                    className="group flex items-center gap-1 text-foreground hover:text-primary transition-all duration-300 w-fit cursor-not-allowed"
+                >
+                    <span>{children}</span>
+                    <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all" />
+                </button>
+            )}
+
+        </li>
+    );
+}
+
+
 
 export default async function Footer({ settings, navigation, locale }: Props) {
     const dict = await getDictionary(locale as Languages);
@@ -88,7 +104,7 @@ export default async function Footer({ settings, navigation, locale }: Props) {
                             <h4 className="font-bold text-foreground text-sm uppercase tracking-[0.2em]">{footerUi.quickLinks}</h4>
                             <ul className="space-y-3">
                                 {quickLinks.map((item) => (
-                                    <FooterLink key={item.href} href={item.href}>
+                                    <FooterLink key={item.href} href={item.href} locale={locale}>
                                         {item.title}
                                     </FooterLink>
                                 ))}
@@ -100,7 +116,7 @@ export default async function Footer({ settings, navigation, locale }: Props) {
                             <h4 className="font-bold text-foreground text-sm uppercase tracking-[0.2em]">{footerUi.overview}</h4>
                             <ul className="space-y-3">
                                 {overviewLinks.map((item) => (
-                                    <FooterLink key={item.href} href={item.href}>
+                                    <FooterLink key={item.href} href={item.href} locale={locale}>
                                         {item.title}
                                     </FooterLink>
                                 ))}

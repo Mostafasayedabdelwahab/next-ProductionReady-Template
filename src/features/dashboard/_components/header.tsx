@@ -1,13 +1,15 @@
 import ThemeToggle from "@/components/shared/theme-toggle";
 import MobileSidebar from "./mobile-sidebar";
 import type { SiteSettingsEntity } from "@/features/site-settings";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import LanguageSwitcher from "@/components/shared/language-switcher";
 import type { getDictionary } from "@/i18n/get-dictionary";
+import UserMenu from "@/components/layout/UserMenu";
+import { Role } from "@/generated/prisma/enums";
 type Props = {
     user: {
         name?: string | null;
         email?: string | null;
+        role?: Role;
         image?: string | null;
     };
     settings: SiteSettingsEntity;
@@ -16,7 +18,7 @@ type Props = {
 
 export function Header({ user, settings, dict }: Props) {
     const nav = dict.dashboard;
-    const userInitials = user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || "U";
+    
     return (
 
         <header className="sticky top-0 z-30 flex items-center justify-between h-14 bg-background/60 backdrop-blur-md border-b shrink-0 transition-all">
@@ -41,17 +43,11 @@ export function Header({ user, settings, dict }: Props) {
 
                 {/* Action Buttons Group */}
                 <div className="flex items-center gap-2 border-l pl-2 dark:border-border/40">
-                    <Avatar className="h-8 w-8 border ring-2 ring-primary/5 transition-transform hover:scale-105">
-                        {user.image && (
-                            <AvatarImage
-                                src={user.image}
-                                alt={user.name || "User Avatar"}
-                            />
-                        )}
-                        <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
-                            {userInitials}
-                        </AvatarFallback>
-                    </Avatar>
+                    <UserMenu user={{
+                        name: user.name,
+                        email: user.email,
+                        role: user.role as Role,
+                    }} image={user.image} />
 
                     {/* Controls Wrapper */}
                     <div className="flex items-center gap-1">

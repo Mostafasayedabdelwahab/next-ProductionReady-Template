@@ -14,7 +14,7 @@ export async function getPublicNavigation(locale: string) {
   ).map((page) => {
     return {
       title: isAr ? page.titleAr : page.titleEn,
-      href: `/${locale}/${page.slug}`,
+      href: page.slug ? `/${locale}/${page.slug}` : `/${locale}`,
       icon: page.icon || "file-text",
     };
   });
