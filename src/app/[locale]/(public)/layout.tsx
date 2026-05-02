@@ -40,7 +40,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   const baseUrl = (settings.domainUrl || "https://example.com").replace(/\/+$/, "");
 
-  const ogImage = getMediaUrl(settings.ogImageUrl) || `/og.png`;
+  const ogImage = getMediaUrl(settings.ogImageUrl);
+  const finalOgImage = ogImage
+    ? `${ogImage}?c_fill,w_1200,h_630`
+    : `${baseUrl}/og.png`;
+  
   const iconImage = getMediaUrl(settings.faviconUrl) || `/glope.svg`;
 
   return {
@@ -79,12 +83,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       type: "website",
       url: new URL(`/${locale}`, baseUrl).toString(),
       locale: locale === "ar" ? "ar_AR" : "en_US",
-      title: brandName,
+      title: siteTitle || brandName,
       description,
       siteName: brandName,
       images: [
         {
-          url: ogImage,
+          url: finalOgImage,
           width: 1200,
           height: 630,
           alt: brandName,
@@ -97,7 +101,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       card: "summary_large_image",
       title: brandName,
       description,
-      images: [ogImage],
+      images: finalOgImage,
     },
   };
 }
