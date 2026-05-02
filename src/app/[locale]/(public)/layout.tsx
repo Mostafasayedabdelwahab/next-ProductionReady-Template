@@ -42,9 +42,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   const ogImage = getMediaUrl(settings.ogImageUrl);
   const finalOgImage = ogImage
-    ? `${ogImage}?c_fill,w_1200,h_630`
+    ? ogImage.replace("/upload/", "/upload/c_fill,w_1200,h_630/")
     : `${baseUrl}/og.png`;
-  
+
   const iconImage = getMediaUrl(settings.faviconUrl) || `/glope.svg`;
 
   return {
@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       { media: "(prefers-color-scheme: dark)", color: "#0b0f19" },
     ],
     title: {
-      default: brandName,
+      default: siteTitle || brandName,
       template: `%s | ${brandName}`,
     },
 
@@ -75,8 +75,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       .map((k) => k.trim())
       .filter(Boolean),
     icons: {
-      icon: [{ url: iconImage }],
-      apple: [{ url: iconImage }],
+      icon: [{ url: iconImage, sizes: "32x32", type: "image/png" }],
+      apple: [{ url: iconImage, sizes: "180x180", type: "image/png" }],
     },
 
     openGraph: {
@@ -99,9 +99,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
     twitter: {
       card: "summary_large_image",
-      title: brandName,
+      title: siteTitle || brandName,
       description,
-      images: finalOgImage,
+      images: [finalOgImage],
     },
   };
 }
@@ -126,7 +126,7 @@ export default async function PublicLayout({ children, params }: { children: Rea
       <Script
         id="structured-data"
         type="application/ld+json"
-        strategy="beforeInteractive"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
@@ -142,13 +142,18 @@ export default async function PublicLayout({ children, params }: { children: Rea
                 name: localized.siteName,
                 url: baseUrl,
                 inLanguage: locale === "ar" ? "ar" : "en",
-                potentialAction: {
-                  "@type": "SearchAction",
-                  target: `${baseUrl}/search?q={search_term_string}`,
-                  "query-input": "required name=search_term_string",
-                },
-
               },
+              {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": baseUrl
+                  }
+                ]
+              }
             ],
           }),
         }}
