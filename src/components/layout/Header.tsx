@@ -44,6 +44,8 @@ export default async function Header({ locale }: { locale: string }) {
                                     alt={siteName}
                                     width={50}
                                     height={50}
+                                    priority
+                                    sizes="50px"
                                     className="object-cover rounded-full"
                                 />
                             ) : (

@@ -71,7 +71,7 @@
             "submitting": "Verifying...",
             "resend": "Resend Code",
             "resending": "Resending..."
-        },  
+        },
         "logout": {
             "label": "Sign Out",
             "loading": "Signing out..."
@@ -90,6 +90,45 @@
             "name": "Enter your full name",
             "phone": "Phone number with country code",
             "address": "City, Street, Building"
+        }
+    },
+    "homePage": {
+        "hero": {
+            "badge": "Production-Ready Management System",
+            "title": "Build Your Next Big Thing with",
+            "highlight": "Next.js Auth Template",
+            "description": "A professional template featuring advanced authentication, comprehensive dashboard, and full role-based access control.",
+            "buttons": {
+                "register": "Create Account",
+                "login": "Sign In"
+            }
+        },
+        "features": {
+            "sectionTitle": "Core Features",
+            "sectionDescription": "Everything you need to build a full Enterprise application",
+            "items": [
+                {
+                    "title": "Advanced Security",
+                    "description": "Fully secure authentication using JWT and Middleware to protect your routes."
+                },
+                {
+                    "title": "Smart Dashboard",
+                    "description": "Professional UI for managing data and controlling system settings with ease."
+                },
+                {
+                    "title": "Lightning Fast",
+                    "description": "Built with Next.js 16 to ensure top performance and SEO optimization."
+                },
+                {
+                    "title": "Modern UI Architecture",
+                    "description": "Built with React 19 for scalable, reusable components and smooth user interactions."
+                }
+            ]
+        },
+        "cta": {
+            "title": "Ready to Experience the System?",
+            "description": "Sign up now and start exploring the dashboard and advanced features the template provides.",
+            "button": "Get Started For Free"
         }
     },
     "unauthorized": {
