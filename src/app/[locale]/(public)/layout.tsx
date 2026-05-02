@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 
 import { getCachedSiteSettings } from "@/loaders/site-settings.loader";
-import type { SiteSettingsEntity } from "@/features/site-settings";
+import { getSiteSettingsService, type SiteSettingsEntity } from "@/features/site-settings";
 
 import { getLocalizedValue } from "@/i18n/localization-helper";
 import Script from "next/script";
@@ -13,7 +13,7 @@ import Header from "@/components/layout/Header";
 import Container from "@/components/layout/container";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
-  const settings = await getCachedSiteSettings();
+  const settings = await getSiteSettingsService();
   const { locale } = await params;
 
   const localized = {
@@ -42,6 +42,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   const ogImage = getMediaUrl(settings.ogImageUrl);
 
+  const safeOgImage =
+    ogImage && ogImage.trim() !== ""
+      ? ogImage
+      : `${baseUrl}/og.png`;
 
   return {
     robots: {
@@ -73,23 +77,21 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       title: brandName,
       description,
       siteName: brandName,
-      images: ogImage
-        ? [
-          {
-            url: ogImage,
-            width: 1200,
-            height: 630,
-            alt: brandName,
-          },
-        ]
-        : undefined,
+      images: [
+        {
+          url: safeOgImage,
+          width: 1200,
+          height: 630,
+          alt: brandName,
+        },
+      ],
     },
 
     twitter: {
       card: "summary_large_image",
       title: brandName,
       description,
-      images: ogImage ? [ogImage] : undefined,
+      images: [safeOgImage],
     },
   };
 }
