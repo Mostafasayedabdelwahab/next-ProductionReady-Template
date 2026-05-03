@@ -56,7 +56,7 @@ export async function forgotPasswordAction(email: string) {
     if (session?.user) {
       return {
         success: false as const,
-        error: "ALREADY_AUTHENTICATED",
+        code: "ALREADY_AUTHENTICATED",
       };
     }
 

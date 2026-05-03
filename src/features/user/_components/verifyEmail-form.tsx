@@ -76,19 +76,14 @@ export default function VerifyEmailForm() {
     const handleResend = async () => {
         setResendLoading(true);
 
-        try {
-            const res = await resendVerificationAction();
-            showSuccess(res.message);
-        } catch (error) {
-            const errorKey =
-                error instanceof Error && error.message in ERROR_CODES
-                    ? (error.message as keyof typeof ERROR_CODES)
-                    : ERROR_CODES.SERVER_ERROR;
+        const res = await resendVerificationAction();
 
-            showError(getErrorMessage(errorKey, dict));
-        } finally {
-            setResendLoading(false);
+        if (res.success) {
+            showSuccess(dict.success.EMAIL_SENT);
+        } else {
+            showError(getErrorMessage(res.code || "SERVER_ERROR", dict));
         }
+        setResendLoading(false);
     };
 
     return (

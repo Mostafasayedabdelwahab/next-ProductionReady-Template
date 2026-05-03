@@ -12,7 +12,7 @@ import RHFInput from "@/components/form/rhf-input";
 import { Button } from "@/components/ui/button";
 
 import { showError, showSuccess } from "@/lib/toast";
-import { ERROR_CODES, getErrorMessage } from "@/config/errors";
+import { getErrorMessage } from "@/config/errors";
 import { useTranslation } from "@/i18n/translation-provider";
 
 export default function ForgotPasswordForm() {
@@ -33,15 +33,8 @@ export default function ForgotPasswordForm() {
 
         if (result.success) {
             showSuccess(dict.success.EMAIL_SENT);
-        } else if ("error" in result) {
-            showError(result.error);
         } else {
-            showError(
-                getErrorMessage(
-                    result.code as keyof typeof ERROR_CODES,
-                    dict
-                )
-            );
+            showError(getErrorMessage(result.code, dict));
         }
 
         setLoading(false);
