@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { UploadCloud, Trash2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,29 @@ type Props = {
     allowedFormats?: string[];
 };
 
+
+let cloudinaryPromise: Promise<void> | null = null;
+
+const loadCloudinaryScript = () => {
+    if (cloudinaryPromise) return cloudinaryPromise;
+
+    cloudinaryPromise = new Promise<void>((resolve) => {
+        if ((window).cloudinary) {
+            resolve();
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = "https://widget.cloudinary.com/v2.0/global/all.js";
+        script.async = true;
+
+        script.onload = () => resolve();
+
+        document.body.appendChild(script);
+    });
+
+    return cloudinaryPromise;
+};
 
 export default function CloudinaryUpload({
     value,
@@ -72,6 +95,8 @@ export default function CloudinaryUpload({
 
         try {
             setIsUploading(true);
+
+            await loadCloudinaryScript();
 
             // ensure widget exists
             if (!window.cloudinary) {
@@ -196,6 +221,15 @@ export default function CloudinaryUpload({
     const imageUrl = value?.url;
 
     const isVideo = value?.resource_type === "video";
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            loadCloudinaryScript();
+        }, 2000);
+
+        return () => clearTimeout(timer);
+    }, []);
+    
     return (
         <div className="w-full flex flex-col justify-center items-center gap-2">
             {/* ================= PREVIEW CONTAINER ================= */}

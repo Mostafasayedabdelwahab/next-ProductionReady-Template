@@ -29,19 +29,22 @@ export default function ForgotPasswordForm() {
     const onSubmit = async (values: { email: string }) => {
         setLoading(true);
 
-        try {
-            const result = await forgotPasswordAction(values.email);
-            showSuccess(result.message);
-        } catch (error) {
-            const errorKey =
-                error instanceof Error && error.message in ERROR_CODES
-                    ? (error.message as keyof typeof ERROR_CODES)
-                    : ERROR_CODES.SERVER_ERROR;
+        const result = await forgotPasswordAction(values.email);
 
-            showError(getErrorMessage(errorKey, dict));
-        } finally {
-            setLoading(false);
+        if (result.success) {
+            showSuccess(dict.success.EMAIL_SENT);
+        } else if ("error" in result) {
+            showError(result.error);
+        } else {
+            showError(
+                getErrorMessage(
+                    result.code as keyof typeof ERROR_CODES,
+                    dict
+                )
+            );
         }
+
+        setLoading(false);
     };
 
     return (

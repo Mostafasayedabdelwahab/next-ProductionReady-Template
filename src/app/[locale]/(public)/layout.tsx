@@ -6,7 +6,7 @@ import { type SiteSettingsEntity } from "@/features/site-settings";
 
 import { getLocalizedValue } from "@/i18n/localization-helper";
 import Script from "next/script";
-import { getPublicNavigation } from "@/components/layout/public-navigation";
+import { getPublicNavigation } from "@/utils/public-navigation";
 import { getMediaUrl } from "@/utils/media";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       },
     },
     metadataBase: new URL(baseUrl),
-      title: {
+    title: {
       default: siteTitle || brandName,
       template: `%s | ${brandName}`,
     },

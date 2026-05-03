@@ -7,12 +7,10 @@ import { Toaster } from "sonner";
 import NextTopLoader from 'nextjs-toploader';
 import Providers from "./providers";
 import { Languages } from "@/config/enums";
-import PageAnimatePresence from "@/components/shared/page-animate-presence";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { TranslationProvider } from "@/i18n/translation-provider";
 import { arabicFonts, englishFonts } from "@/config/fonts";
 import { cn } from "@/utils/utils";
-import Script from "next/script";
 // map radius → actual css value
 const radiusMap: Record<RadiusOption, string> = {
     sharp: "0px",
@@ -49,7 +47,7 @@ export default async function RootLayout({ children, params }: { children: React
     const fontClass = locale === "ar"
         ? (arabicFont?.className || "")
         : (englishFont?.className || "");
-
+    
     return (
         <html lang={locale} dir={direction} suppressHydrationWarning style={themeStyle} className={fontClass}>
             <body className={cn("antialiased flex min-h-screen flex-col w-full", fontClass)} suppressHydrationWarning>
@@ -64,10 +62,7 @@ export default async function RootLayout({ children, params }: { children: React
                 <Providers defaultTheme={settings.defaultTheme}>
                     <TranslationProvider dict={dict} locale={locale}>
                         <NextTopLoader color="var(--primary-base)" showSpinner={false} height={3} />
-                        <PageAnimatePresence >
-                            <Script src="https://widget.cloudinary.com/v2.0/global/all.js" strategy="lazyOnload" />
-                            {children}
-                        </PageAnimatePresence>
+                        {children}
                         <Toaster richColors position="top-center" closeButton />
                     </TranslationProvider>
                 </Providers>

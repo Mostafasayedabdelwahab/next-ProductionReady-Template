@@ -5,7 +5,7 @@ import LanguageSwitcher from "../shared/language-switcher";
 import { getLocalizedValue } from "@/i18n/localization-helper";
 import Container from "./container";
 import MobileSidebar from "./mobile-sidebar";
-import { getPublicNavigation } from "./public-navigation";
+import { getPublicNavigation } from "../../utils/public-navigation";
 import HeaderClient from "./HeaderClient";
 import { getCachedSiteSettings } from "@/loaders/site-settings.loader";
 import { SiteSettingsEntity } from "@/features/site-settings";
@@ -74,10 +74,10 @@ export default async function Header({ locale }: { locale: string }) {
                         }} image={session.user.image} />
                     ) : (
                         <div className="flex items-center gap-2">
-                                <Button asChild size="sm" className="hidden md:flex rounded-full">
-                                <Link  href={`/${locale}/login`}>{dict.auth.login.submit}</Link>
+                            <Button asChild size="sm" className="hidden md:flex rounded-full">
+                                <Link href={`/${locale}/login`}>{dict.auth.login.submit}</Link>
                             </Button>
-                                <Button variant="outline" asChild size="sm" className="rounded-full">
+                            <Button variant="outline" asChild size="sm" className="rounded-full">
                                 <Link href={`/${locale}/register`}>{dict.auth.register.submit}</Link>
                             </Button>
                         </div>

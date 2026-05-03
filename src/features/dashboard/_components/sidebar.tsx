@@ -1,28 +1,27 @@
 "use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
     LayoutDashboard,
     Settings,
 } from "lucide-react";
 
 import LogoutButton from "@/features/user/_components/logout-button";
-import type { SiteSettingsEntity } from "@/features/site-settings";
 import Image from "next/image";
 import { cn } from "@/utils/utils";
-import { useTranslation } from "@/i18n/translation-provider";
 import { getLocalizedValue } from "@/i18n/localization-helper";
 import { getMediaUrl } from "@/utils/media";
+import { useTranslation } from "@/i18n/translation-provider";
+import { usePathname } from "next/navigation";
+import type{ SiteSettingsEntity } from "@/features/site-settings";
 
 interface SidebarProps {
     settings: SiteSettingsEntity;
 }
 
 export function Sidebar({ settings }: SidebarProps) {
-    const { dict, locale } = useTranslation();
-    const pathname = usePathname();
 
+    const { locale, dict } = useTranslation();
+    const pathname = usePathname();
     const siteName = getLocalizedValue(
         settings.siteNameAr,
         settings.siteNameEn,

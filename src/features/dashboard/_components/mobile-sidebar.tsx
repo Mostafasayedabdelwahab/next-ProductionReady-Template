@@ -1,5 +1,5 @@
 "use client";
-import { Menu, PanelLeftClose, PanelRightClose } from "lucide-react";
+import { LayoutDashboard, Menu, PanelLeftClose, PanelRightClose, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Sheet,
@@ -8,20 +8,34 @@ import {
     SheetTitle,
     SheetClose,
 } from "@/components/ui/sheet";
-
-
-import { Sidebar } from "./sidebar";
-import type { SiteSettingsEntity } from "@/features/site-settings";
 import { useTranslation } from "@/i18n/translation-provider";
+import Link from "next/link";
+import { cn } from "@/utils/utils";
+import { usePathname } from "next/navigation";
 
-type Props = {
-    settings: SiteSettingsEntity;
-};
 
-export default function MobileSidebar({ settings }: Props) {
-    const { locale } = useTranslation();
+export default function MobileSidebar() {
+    const { locale, dict } = useTranslation();
     const isAr = locale === "ar";
     const CloseIcon = isAr ? PanelRightClose : PanelLeftClose;
+    const pathname = usePathname();
+
+      const sections = [
+        {
+            id: "overview",
+            title: dict.dashboard.sidebar.overview,
+            href: `/${locale}/dashboard`,
+            icon: LayoutDashboard,
+        },
+        {
+            id: "settings",
+            title: dict.dashboard.sidebar.settings,
+            href: `/${locale}/dashboard/admin/settings`,
+            icon: Settings,
+        },
+    ];
+
+
     return (
         <Sheet>
             <SheetTrigger asChild>
@@ -48,8 +62,30 @@ export default function MobileSidebar({ settings }: Props) {
                     </SheetClose>
                 </div>
 
-                {/* Reusing the same Sidebar component */}
-                <Sidebar settings={settings} />
+                {/* NAV */}
+                <nav className="flex-1 overflow-y-auto px-4 py-4">
+                    <ul className="space-y-2">
+                        {sections.map((section) => {
+                            const isActive = pathname === section.href;
+                            return (
+                                <li key={section.id}>
+                                    <Link
+                                        href={section.href}
+                                        className={cn(
+                                            "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                                            isActive
+                                                ? "bg-primary text-primary-foreground"
+                                                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                        )}
+                                    >
+                                        <section.icon className="h-5 w-5" />
+                                        <span>{section.title}</span>
+                                    </Link>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </nav>
             </SheetContent>
         </Sheet>
     );

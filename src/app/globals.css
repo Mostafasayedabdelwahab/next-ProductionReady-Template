@@ -178,7 +178,6 @@
 
 /* ===== Global Motion ===== */
 
-
 html {
   scroll-behavior: smooth;
 }
@@ -188,9 +187,7 @@ html {
 }
 
 /* Page fade */
-.page-enter {
-  animation: pageFade 0.25s ease-out;
-}
+
 .background-layer {
   position: fixed;
   inset: 0;
@@ -200,14 +197,94 @@ html {
 .orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(120px);
+  filter: blur(60px);
   animation: pulse-orb 10s ease-in-out infinite;
+}
+
+.page-enter {
+  animation: pageFade 0.25s ease-out;
 }
 
 .float-badge {
   animation: floatY 4s ease-in-out infinite;
 }
 
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.page-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+.shake {
+  animation: shake 0.4s ease;
+}
+
+.loading-bar {
+  width: 100%;
+  height: 100%;
+  background: var(--primary);
+  animation: slide 1.5s infinite ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb,
+  .shake,
+  .float-badge,
+  .fade-in,
+  .slideUp,
+  .page-enter {
+    animation: none !important;
+  }
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
 @keyframes pulse-orb {
   0%,
@@ -243,4 +320,3 @@ html {
     transform: translateY(0);
   }
 }
-

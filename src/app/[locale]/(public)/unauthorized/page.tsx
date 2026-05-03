@@ -6,7 +6,6 @@ import type { Metadata } from "next";
 
 import Link from "next/link";
 
-
 export async function generateMetadata({
     params,
 }: {

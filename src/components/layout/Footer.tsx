@@ -6,7 +6,7 @@ import Link from "next/link";
 import { getLocalizedValue } from "@/i18n/localization-helper";
 import Container from "./container";
 import { cn } from "@/utils/utils";
-import type { NavItem } from "./public-navigation";
+import type { NavItem } from "../../utils/public-navigation";
 import { getMediaUrl } from "@/utils/media";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { Languages } from "@/config/enums";

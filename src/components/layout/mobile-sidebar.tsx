@@ -17,7 +17,7 @@ import ThemeToggle from "@/components/shared/theme-toggle";
 import type { SiteSettingsEntity } from "@/features/site-settings";
 import { getLocalizedValue } from "@/i18n/localization-helper";
 import Image from "next/image";
-import { NavItem } from "./public-navigation";
+import { NavItem } from "../../utils/public-navigation";
 import { usePathname } from "next/navigation";
 import { cn } from "@/utils/utils";
 import { ICONS } from "@/config/icons";
@@ -111,11 +111,11 @@ export default function MobileSidebar({
                                         <Icon className="w-5 h-5" />
                                         <span className="flex-1">{item.title}</span>
                                     </Link>
-                                ) : ( 
-                                        <button
-                                            disabled={true}
+                                ) : (
+                                    <button
+                                        disabled={true}
                                         type="button"
-                                            className="group relative flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] font-medium transition-all duration-200  text-muted-foreground opacity-60 w-full text-start cursor-not-allowed"
+                                        className="group relative flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] font-medium transition-all duration-200  text-muted-foreground opacity-60 w-full text-start cursor-not-allowed"
                                     >
                                         <Icon className="w-5 h-5" />
                                         <span className="flex-1">{item.title}</span>

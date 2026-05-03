@@ -21,9 +21,8 @@ import RHFSelect from "@/components/form/rhf-select";
 // Logic & Types
 import { useSiteSettingsForm } from "./use-site-settings-form";
 import { type SiteSettingsFormValues } from "../site-settings.schema";
-import { ArabicFont, EnglishFont, RadiusOption, ThemeMode } from "@/generated/prisma/enums"; // Importing RadiusOptions enum from generated Prisma enums
+import { ArabicFont, EnglishFont, RadiusOption, ThemeMode } from "@/generated/prisma/enums"; 
 import { useTranslation } from "@/i18n/translation-provider";
-import { motion, Variants } from "framer-motion";
 import FormActions from "@/components/form/form-actions";
 import { DEFAULT_THEME } from "@/config/constants";
 import RHFPhoneInput from "@/components/form/rhf-phoneInput";
@@ -31,24 +30,6 @@ type Props = {
     defaultValues: SiteSettingsFormValues | null;
 };
 
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1,
-        },
-    },
-};
-
-const itemVariants: Variants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-        y: 0,
-        opacity: 1,
-        transition: { duration: 0.4, ease: "easeOut" },
-    },
-};
 
 // Reusable Section Header with Icon
 function SectionHeader({ title, icon: Icon }: { title: string; icon: React.ComponentType<{ size?: number }> }) {
@@ -88,16 +69,14 @@ export default function SiteSettingsForm({ defaultValues }: Props) {
     }, [isDirty]);
 
     return (
-        <motion.section variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="space-y-2">
+        <section 
+            className="space-y-2 fade-in">
             <h1 className="text-xl font-semibold">{dict.dashboard.siteSettings.title}</h1>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 pb-4">
 
                     {/* ================= BASIC INFO ================= */}
-                    <motion.div variants={itemVariants} className="space-y-2">
+                    <div className="fade-in space-y-2">
 
                         <Card className="bg-card border shadow-sm">
                             <CardContent >
@@ -225,10 +204,10 @@ export default function SiteSettingsForm({ defaultValues }: Props) {
                                 </div>
                             </CardContent>
                         </Card>
-                    </motion.div>
+                    </div>
 
                     {/* ================= SOCIAL & SEO ================= */}
-                    <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div className="fade-in grid grid-cols-1 lg:grid-cols-2 gap-4">
                         {/* Social Media Column */}
                         <Card className="bg-card border shadow-sm">
                             <CardContent className="space-y-6">
@@ -262,16 +241,15 @@ export default function SiteSettingsForm({ defaultValues }: Props) {
                                 </div>
                             </CardContent>
                         </Card>
-                    </motion.div>
+                    </div>
 
                     {/* ================= ACTIONS ================= */}
                     <FormActions
                         isDirty={form.formState.isDirty}
                         isPending={isPending}
-                        variants={itemVariants}
                     />
                 </form>
             </Form>
-        </motion.section>
+        </section>
     );
 }

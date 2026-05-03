@@ -14,6 +14,7 @@ export const metadata = {
 export default function NotFound() {
 
     return (
+        
         <html lang="ar" dir="rtl">
             <body className="antialiased font-sans">
                 <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background p-4 text-center">

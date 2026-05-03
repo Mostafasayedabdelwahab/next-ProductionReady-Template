@@ -7,9 +7,9 @@ import {
   forgotPassword,
 } from "./user.service";
 
-import { ZodError } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { handleActionError } from "@/utils/action-helper";
 
 /**
  * Register
@@ -19,11 +19,13 @@ export async function registerAction(input: unknown) {
     const user = await registerUser(input);
 
     return {
-      message: "Account created. Please verify your email.",
-      userId: user.id,
+      success: true as const,
+      data: {
+        userId: user.id,
+      },
     };
   } catch (error) {
-    handleError(error);
+    return handleActionError(error);
   }
 }
 
@@ -31,50 +33,39 @@ export async function registerAction(input: unknown) {
  * Resend verification email
  */
 export async function resendVerificationAction() {
-  const user = await requireAuthUser();
+  try {
+    const user = await requireAuthUser();
 
-  await resendVerificationEmail(user.user.email);
-  return {
-    message: "If an account exists, a verification email has been sent.",
-  };
+    await resendVerificationEmail(user.user.email);
+
+    return {
+      success: true as const,
+    };
+  } catch (error) {
+    return handleActionError(error);
+  }
 }
 
 /**
  * Forgot password
  */
 export async function forgotPasswordAction(email: string) {
-  const session = await getServerSession(authOptions);
-
-  if (session?.user) {
-    throw new Error("You are already logged in");
-  }
-
   try {
+    const session = await getServerSession(authOptions);
+
+    if (session?.user) {
+      return {
+        success: false as const,
+        error: "ALREADY_AUTHENTICATED",
+      };
+    }
+
     await forgotPassword(email);
 
     return {
-      message: "If the email exists, a reset link was sent",
+      success: true as const,
     };
   } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
-
-    throw new Error("Something went wrong");
+    return handleActionError(error);
   }
-}
-
-/**
- * Shared error handler
- */
-function handleError(error: unknown): never {
-  if (error instanceof ZodError) {
-    throw new Error(error.issues[0].message);
-  }
-
-  if (error instanceof Error) {
-    throw new Error(error.message);
-  }
-
-  throw new Error("Something went wrong");
 }
