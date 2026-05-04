@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { loginUser } from "@/features/user/user.service";
 import { Environments } from "@/config/enums";
 import { Role } from "@/generated/prisma/enums";
+import { checkRateLimit } from "@/services/rate-limit";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -102,6 +103,12 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials.password) {
           throw new Error("Missing credentials");
+        }
+
+        const rateLimitResult = await checkRateLimit("login", credentials.email);
+
+        if (!rateLimitResult.success) {
+          throw new Error("TOO_MANY_REQUESTS"); 
         }
 
         const user = await loginUser({

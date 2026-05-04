@@ -58,6 +58,18 @@ const loadCloudinaryScript = () => {
     return cloudinaryPromise;
 };
 
+
+function getComputedColor(variable: string) {
+    const el = document.createElement("div");
+    el.style.color = `var(${variable})`;
+    document.body.appendChild(el);
+
+    const color = getComputedStyle(el).color;
+
+    document.body.removeChild(el);
+    return color;
+}
+
 export default function CloudinaryUpload({
     value,
     onChange,
@@ -119,6 +131,10 @@ export default function CloudinaryUpload({
             const data: SignatureResponse = await res.json();
 
             document.body.style.pointerEvents = "auto";
+
+            const primary = getComputedColor("--primary");
+            const background = getComputedColor("--background");
+            const border = getComputedColor("--border");
             const widget = window.cloudinary.createUploadWidget(
                 {
                     cloudName: data.cloudName,
@@ -126,11 +142,38 @@ export default function CloudinaryUpload({
                     uploadSignature: data.signature,
                     uploadSignatureTimestamp: data.timestamp,
                     folder: data.folder,
-                    sources: ["local", "url", "camera"],
+                    sources: ["local", "url", "camera", "unsplash"],
                     multiple: false,
                     resourceType: finalResourceType,
                     clientAllowedFormats: finalFormats,
                     maxFileSize: finalMaxSize,
+                    language: "en",
+                    text: {
+                        en: {
+                            menu: {
+                                files: "My Photos"
+                            },
+                            local: {
+                                browse: "Select from computer"
+                            }
+                        }
+                    },
+                    styles: {
+                        palette: {
+                            window: background,
+                            sourceBg: background,
+                            windowBorder: border,
+
+                            tabIcon: primary,
+                            menuIcons: primary,
+                            link: primary,
+                            action: primary,
+                            inProgress: primary,
+
+                            complete: "rgb(34,197,94)",
+                            error: "rgb(239,68,68)",
+                        },
+                    }
                 },
                 (error: unknown, result: CloudinaryUploadResult) => {
                     if (error) {

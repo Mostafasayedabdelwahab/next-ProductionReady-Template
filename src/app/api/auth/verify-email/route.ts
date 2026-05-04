@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { encode } from "next-auth/jwt";
+import { checkRateLimit } from "@/services/rate-limit";
 
 export async function POST(req: Request) {
   try {
@@ -11,6 +12,11 @@ export async function POST(req: Request) {
     if (!session?.user?.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
+
+     const rate = await checkRateLimit("auth", session.user.id);
+     if (!rate.success) {
+       return NextResponse.json(rate, { status: 429 });
+     }
 
     const { code } = await req.json();
 

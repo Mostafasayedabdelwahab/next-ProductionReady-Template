@@ -66,6 +66,7 @@
         "verifyEmail": {
             "title": "Verify Your Email",
             "description": "A verification code has been sent to your email. Please enter it below to verify your account.",
+            "sentTo": "We sent a code to",
             "codeLabel": "Verification Code",
             "submit": "Verify Email",
             "submitting": "Verifying...",

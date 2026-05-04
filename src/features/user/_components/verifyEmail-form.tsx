@@ -16,10 +16,20 @@ import { ERROR_CODES, getErrorMessage } from "@/config/errors";
 import { useTranslation } from "@/i18n/translation-provider";
 
 import { resendVerificationAction } from "@/features/user/user.actions";
+import { useSession } from "next-auth/react";
 
 type FormValues = {
     code: string;
 };
+
+function maskEmail(email: string) {
+    const [name, domain] = email.split("@");
+
+    const visible = name.slice(0, 2);
+    const hidden = "*".repeat(Math.max(name.length - 2, 2));
+
+    return `${visible}${hidden}@${domain}`;
+}
 
 export default function VerifyEmailForm() {
     const { dict, locale } = useTranslation();
@@ -86,8 +96,19 @@ export default function VerifyEmailForm() {
         setResendLoading(false);
     };
 
+    const { data } = useSession();
+    const email = data?.user?.email;
+
     return (
         <Form {...form}>
+
+            <p className="text-sm text-muted-foreground text-center">
+                {dict_verify.sentTo}{" "}
+                <span className="font-medium text-foreground">
+                    {email ? maskEmail(email) : "..."}
+                </span>
+            </p>
+
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 
                 <RHFInput

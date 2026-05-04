@@ -20,7 +20,10 @@ import {
   loginSchema,
   resetPasswordApiSchema,
 } from "./user.schema";
-import { sendEmailVerificationEmail, sendResetPasswordEmail } from "@/services/mail";
+import {
+  sendEmailVerificationEmail,
+  sendResetPasswordEmail,
+} from "@/services/mail";
 import { ERROR_CODES } from "@/config/errors";
 
 export async function registerUser(input: unknown) {
@@ -28,7 +31,9 @@ export async function registerUser(input: unknown) {
 
   const { email, password, name } = data;
 
-  const existingUser = await findUserByEmail(email);
+  const normalizedEmail = email.toLowerCase().trim();
+
+  const existingUser = await findUserByEmail(normalizedEmail);
   if (existingUser) {
     throw new Error(ERROR_CODES.USER_ALREADY_EXISTS);
   }
@@ -36,7 +41,7 @@ export async function registerUser(input: unknown) {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await createUser({
-    email,
+    email: normalizedEmail,
     name,
     password: hashedPassword,
   });
@@ -49,6 +54,7 @@ export async function registerUser(input: unknown) {
 }
 
 export async function loginUser(input: unknown) {
+
   const data = loginSchema.parse(input);
 
   const { email, password } = data;
@@ -76,6 +82,7 @@ export async function loginUser(input: unknown) {
   const { password: _, ...safeUser } = user;
 
   return safeUser;
+  
 }
 
 export async function forgotPassword(email: string) {
@@ -160,6 +167,7 @@ export async function sendEmailVerification(userId: string) {
   const lastToken = await findLastEmailVerificationToken(user.id);
 
   if (lastToken) {
+
     const diff = Date.now() - lastToken.createdAt.getTime();
 
     if (diff < 1000 * 60 * 5) {

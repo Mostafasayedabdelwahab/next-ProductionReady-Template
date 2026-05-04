@@ -34,6 +34,8 @@ export const rateLimits = {
   // strict (password / login)
   auth: createRateLimiter(5, "30s"),
 
+  login: createRateLimiter(10, "10m"),
+
   // medium (profile update)
   user: createRateLimiter(10, "30s"),
 
