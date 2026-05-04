@@ -99,10 +99,11 @@ export async function proxy(req: NextRequest) {
 
   // Force email verification
   if (token && !token.emailVerified) {
-    const allowed =
-      cleanPath.startsWith("/verify-email") || pathname.startsWith("/api/auth");
+    const matchedRoute = ROUTE_PERMISSIONS.find((route) =>
+      cleanPath.startsWith(route.path),
+    );
 
-    if (!allowed) {
+    if (matchedRoute) {
       return NextResponse.redirect(buildUrl(req, `/${locale}/verify-email`));
     }
   }

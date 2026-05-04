@@ -34,7 +34,7 @@ export default function ForgotPasswordForm() {
         if (result.success) {
             showSuccess(dict.success.EMAIL_SENT);
         } else {
-            showError(getErrorMessage(result.code, dict));
+            showError(getErrorMessage(result.code || "SERVER_ERROR", dict));
         }
 
         setLoading(false);
