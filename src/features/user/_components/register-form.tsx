@@ -48,7 +48,12 @@ export default function RegisterForm() {
             const { confirmPassword: _, ...payload } = values;
 
             // Create user
-            await registerAction(payload);
+            const result = await registerAction(payload);
+
+            if (!result.success) {
+                showError(getErrorMessage(result.code || "SERVER_ERROR", dict));
+                return;
+            }
 
             // Auto login
             const res = await signIn("credentials", {
