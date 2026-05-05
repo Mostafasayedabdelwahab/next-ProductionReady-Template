@@ -1,51 +1,193 @@
 # Project Setup Guide
 
-This document explains how to run the project locally from scratch.
+This guide explains how to run the project locally from scratch.
 
-> If you are looking for an overview of the project architecture and features,  
-> see `README.md`.
+> For project architecture, features, and security overview, see `README.md`.
 
 ---
-## Requirements
+
+# Requirements
 
 Make sure you have the following installed:
 
-- Node.js **18+**
-- npm (comes with Node.js)
-- PostgreSQL database (Neon / Supabase / Local)
+- Node.js 18+
+- npm
+- PostgreSQL Database
+  - Neon
+  - Supabase
+  - Local PostgreSQL
 - Git
 
+---
+
+# Check Installed Versions
 
 ```bash
-Check versions:
 node -v
 npm -v
+```
 
-1. Clone the Repository
+---
+
+# Clone the Repository
+
+```bash
 git clone <REPOSITORY_URL>
 cd <PROJECT_FOLDER>
-
-2. Install Dependencies
-npm install
-This will also run prisma generate automatically.
-
-3. Environment Variables
-Create a local .env file:
-cp .env.example .env
-Fill the required values in .env.
-
-4. Database Setup
-Development: npx prisma migrate dev
-Production: npx prisma migrate deploy
-Optional (generate client manually if needed): npx prisma generate
-
-5. Run the Development Server
-npm run dev
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-If the homepage loads, the setup is successful.
-
-Final Notes
-Ensure all environment variables are set correctly
-Use Node.js version 18 or higher
-For architecture and security details, refer to README.md
 ```
+
+---
+
+# Install Dependencies
+
+```bash
+npm install
+```
+
+This will automatically run:
+
+```bash
+prisma generate
+```
+
+via the `postinstall` script.
+
+---
+
+# Environment Variables
+
+Create a local `.env` file:
+
+```bash
+cp .env.example .env
+```
+
+Fill all required values inside `.env`.
+
+---
+
+# Required External Services
+
+The project depends on the following services:
+
+- PostgreSQL Database
+- Cloudinary
+- Email Provider
+- Upstash Redis (optional for rate limiting)
+
+---
+
+# Database Setup
+
+## Development
+
+```bash
+npx prisma migrate dev
+```
+
+## Production
+
+```bash
+npx prisma migrate deploy
+```
+
+---
+
+# Generate Prisma Client
+
+Optional manual generation:
+
+```bash
+npx prisma generate
+```
+
+---
+
+# Run Development Server
+
+```bash
+npm run dev
+```
+
+Open:
+
+```txt
+http://localhost:3000
+```
+
+If the homepage loads successfully, the setup is complete.
+
+---
+
+# Production Build
+
+```bash
+npm run build
+npm start
+```
+
+---
+
+# Common Commands
+
+## Prisma Studio
+
+```bash
+npx prisma studio
+```
+
+## Reset Database
+
+```bash
+npx prisma migrate reset
+```
+
+---
+
+# Important Notes
+
+- Ensure all environment variables are configured correctly
+- Use Node.js version 18 or higher
+- Never commit `.env` files
+- Keep all secrets server-side only
+- Cloudinary uploads require valid API credentials
+- Cron jobs require `CRON_SECRET`
+
+---
+
+# Troubleshooting
+
+## Prisma Client Issues
+
+Run:
+
+```bash
+npx prisma generate
+```
+
+---
+
+## Database Connection Errors
+
+Verify:
+
+- `DATABASE_URL`
+- SSL configuration
+- PostgreSQL server availability
+
+---
+
+## Cloudinary Upload Issues
+
+Verify:
+
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+
+---
+
+# Additional Documentation
+
+- `README.md` → Project overview and architecture
+- `.env.example` → Required environment variables

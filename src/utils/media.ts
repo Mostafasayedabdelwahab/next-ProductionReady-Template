@@ -19,7 +19,16 @@ export function parseMedia(value: unknown): Media | null {
 
 // get only url (most used)
 export function getMediaUrl(value: unknown): string | null {
-  return isMedia(value) ? value.url : null;
+  const url = isMedia(value) ? value.url : null;
+  if (!url) return null;
+
+  if (url.includes("res.cloudinary.com/dyakgf0sk/image/upload/")) {
+    return url.replace(
+      "https://res.cloudinary.com/dyakgf0sk/image/upload/",
+      "/assets/",
+    );
+  }
+  return url;
 }
 
 // get resource type
@@ -51,25 +60,28 @@ export function getOptimizedImageUrl(
     quality?: "auto" | number;
   },
 ): string {
-  // Return the original value if URL is empty
   if (!url) return url;
 
-  // Ensure the URL belongs to Cloudinary
-  if (!url.includes("/upload/")) return url;
-
   const { width, height, quality = "auto" } = options ?? {};
-
-  // Default transformations
   const transformations: string[] = ["f_auto", `q_${quality}`];
-
-  // Add width and height transformations if provided
   if (width) transformations.push(`w_${width}`);
   if (height) transformations.push(`h_${height}`);
-
   const transformationString = transformations.join(",");
 
-  // Inject transformations after /upload/
-  return url.replace("/upload/", `/upload/${transformationString}/`);
+  if (url.includes("res.cloudinary.com/dyakgf0sk/image/upload/")) {
+    return url
+      .replace("/upload/", `/upload/${transformationString}/`)
+      .replace(
+        "https://res.cloudinary.com/dyakgf0sk/image/upload/",
+        "/assets/",
+      );
+  }
+
+  if (url.startsWith("/assets/")) {
+    return url.replace("/assets/", `/assets/${transformationString}/`);
+  }
+
+  return url;
 }
 
 export function extractPublicIdFromUrl(url: string): string | null {
