@@ -17,7 +17,7 @@ export async function POST() {
     const user = await requireUser();
 
     if (user.email === process.env.ADMIN_DEMO_EMAIL) {
-      return new Response("Demo not allowed", { status: 403 });
+      return new Response(ERROR_CODES.SERVER_ERROR, { status: 403 });
     }
 
     // 2. Validate environment configuration

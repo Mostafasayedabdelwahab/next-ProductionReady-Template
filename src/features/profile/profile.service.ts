@@ -4,6 +4,7 @@ import {
   getUserNameById,
   updateUserPassword,
   getUserWithPassword,
+  getUserById,
 } from "../user/user.repository";
 import {
   createProfile,
@@ -54,6 +55,16 @@ export async function updateUserProfile(
   input: unknown,
 ): Promise<Profile> {
   // Validate input (runtime safety)
+  const user = await getUserById(userId);
+
+  if (!user) {
+    throw new Error(ERROR_CODES.NOT_FOUND);
+  }
+
+  if (user.email === process.env.ADMIN_DEMO_EMAIL) {
+    throw new Error(ERROR_CODES.NOT_ALLOWED_IN_DEMO);
+  }
+
   const data: UpdateProfileInput = updateProfileSchema.parse(input);
 
   return updateProfile(userId, data);
@@ -71,7 +82,6 @@ export async function changeUserPassword(userId: string, input: unknown) {
   if (user.email === process.env.ADMIN_DEMO_EMAIL) {
     throw new Error(ERROR_CODES.NOT_ALLOWED_IN_DEMO);
   }
-
 
   const isValid = await bcrypt.compare(data.currentPassword, user.password);
 

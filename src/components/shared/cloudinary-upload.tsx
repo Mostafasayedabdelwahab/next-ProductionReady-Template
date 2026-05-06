@@ -101,7 +101,7 @@ export default function CloudinaryUpload({
 
     const handleUpload = useCallback(async () => {
         if (isDemoUser) {
-            showError("Demo mode: upload disabled");
+            showError(getErrorMessage(ERROR_CODES.NOT_ALLOWED_IN_DEMO, dict));
             return;
         }
 
@@ -240,7 +240,7 @@ export default function CloudinaryUpload({
 
     const handleRemove = async () => {
         if (isDemoUser) {
-            showError("Demo mode: delete disabled");
+            showError(getErrorMessage(ERROR_CODES.NOT_ALLOWED_IN_DEMO, dict));
             return;
         }
         if (value?.public_id) {
